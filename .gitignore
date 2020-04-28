@@ -1,0 +1,10 @@
+.Rhistory
+*~
+\#*\#
+*-files
+latex/*.dvi
+latex/*.log
+latex/*.aux
+latex/*.bbl
+latex/*.blg
+latex/*.synctex.gz
