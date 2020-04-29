@@ -52,8 +52,7 @@ make_path <- function(tree_raw, tmax = Inf) {
 #'     of tibbles, with one tibble for each depth level.
 #' @export
 treelist_to_paths <- function(treelist,
-                              tmax = Inf,
-                              keep_trees = TRUE) {
+                              tmax = Inf) {
     tibble(id_sim = seq_along(treelist),
            tree = treelist) %>%
         # first, unnest the sublists
@@ -81,5 +80,36 @@ treelist_to_paths <- function(treelist,
                n_infectious = cumsum(delta)) %>%
         # cleanup
         ungroup %>%
-        select(-starts_with("delta"))
+        select(-starts_with("delta")) %>%
+        filter(date <= tmax)
+}
+
+
+#' Make all paths end at a fixed time
+#'
+#' @param df_paths A \code{data.frame}. Typically, the output of
+#'     \code{\link{treelist_to_paths}}. The following columns are
+#'     required: \code{date}, \code{id_sim}.
+#' @param tmax A non-negative scalar.
+#'
+#' @return A \code{tbl} with the same format as \code{df_paths}, but
+#'     with the last point for each path fixed at \code{tmax}.
+#'
+#' @export
+equalize_paths <- function(df_paths, tmax) {
+    # Truncate points beyond tmax
+    df_paths <- df_paths %>% filter(date <= tmax)
+    # Extend paths that need it
+    tails <-
+        df_paths %>%
+        arrange(date) %>%
+        group_by(id_sim) %>%
+        summarize_all(~ tail(., 1)) %>%
+        filter(date < tmax) %>%
+        mutate(date = tmax)
+    # Add extensions to truncated paths
+    df_paths_equal <-
+        bind_rows(df_paths, tails) %>%
+        arrange (id_sim, date)
+    return(df_paths_equal)
 }

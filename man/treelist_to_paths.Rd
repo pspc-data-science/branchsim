@@ -4,7 +4,7 @@
 \alias{treelist_to_paths}
 \title{Compute paths from a list of trees}
 \usage{
-treelist_to_paths(treelist, tmax = Inf, keep_trees = TRUE)
+treelist_to_paths(treelist, tmax = Inf)
 }
 \arguments{
 \item{treelist}{A list of lists. Each sublist corresponds to a

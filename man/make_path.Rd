@@ -2,14 +2,12 @@
 % Please edit documentation in R/process-functions.R
 \name{make_path}
 \alias{make_path}
-\title{Leaving this function here for now, but
-\code{\link{treelist_to_paths}} is much faster. Will probably be
-removed soon.}
+\title{Leaving this function here for now, but will probably remove soon.
+\code{\link{treelist_to_paths}} is much faster.}
 \usage{
 make_path(tree_raw, tmax = Inf)
 }
 \description{
-Leaving this function here for now, but
-\code{\link{treelist_to_paths}} is much faster. Will probably be
-removed soon.
+Leaving this function here for now, but will probably remove soon.
+\code{\link{treelist_to_paths}} is much faster.
 }
