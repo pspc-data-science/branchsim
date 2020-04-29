@@ -1,5 +1,45 @@
-
-add_layer <- function(old_layer,
+#' Builds the next generation of nodes in a tree
+#'
+#' Given a set of parent nodes and their properties, this function
+#' simulates the next generation of infected nodes.
+#'
+#' @param parent_layer A \code{data.frame}. Contains the properties of
+#'     each parent node. The columns are \code{id_parent} (the index
+#'     of the parent's parent node), \code{t_infect} (the clock time
+#'     at which that parent was infected), \code{t_comm} (the duration
+#'     of the parent's communicable period).
+#' @param tmax A non-negative scalar. Cutoff time for the simulated
+#'     branches.
+#' @param tbar A non-negative scalar. Average duration of the
+#'     communicable windows of the new nodes. Together with
+#'     \code{kappa}, it determines a shape parameter \code{tbar *
+#'     kappa} for the the Gamma distribution from which we draw a
+#'     communicable period for each new node.
+#' @param p A scalar between 0 and 1. Parameter for a logarithmic
+#'     distribution, giving the expected number of new infections per
+#'     infection event.
+#' @param lambda A non-negative scalar. Parameter for a Poisson
+#'     distribution, giving the expected number of infection events
+#'     per parent node.
+#' @param kappa A non-negative scalar (including \code{Inf}). Rate
+#'     parameter for the Gamma distribution from which we draw a
+#'     communicable period duration for each new node. If \code{kappa
+#'     = Inf}, then the draw is deterministic, and all communicable
+#'     periods are exactly equal to \code{tbar}.
+#' @param q A scalar between 0 and 1. The probability that a parent
+#'     node is intercepted (e.g. through contact tracing).
+#' @param mbar A non-negative scalar. The value replacing \code{tbar}
+#'     for intercepted parent nodes. This parameter has no role if
+#'     \code{q = 0}.
+#' @param kappaq A non-negative scalar. The value replacing
+#'     \code{kappa} for intercepted parent nodes. This parameter has
+#'     no role if \code{q = 0}.
+#'
+#' @return A \code{tibble} with one row for each new node, and three
+#'     columns: \code{id_parent}, \code{t_infect}, and \code{t_comm}.
+#'
+#' @export
+add_layer <- function(parent_layer,
                       tmax,
                       tbar,
                       p,
@@ -9,14 +49,23 @@ add_layer <- function(old_layer,
                       mbar,
                       kappaq) {
 
-    p_id <- which(old_layer$t_infect < tmax)
+    # temporary index variable: keep only parents infected before tmax
+    p_id <- which(parent_layer$t_infect < tmax)
     n_parents <- length(p_id)
-    n_events <- rpois(n_parents, lambda * old_layer$t_comm[p_id])
-    t_infect_parents <- rep(old_layer$t_infect[p_id], times = n_events)
-    t_comm_parents <- rep(old_layer$t_comm[p_id], times = n_events)
+    # number of infection events for each parent
+    n_events <- rpois(n_parents, lambda * parent_layer$t_comm[p_id])
+    # Compute the timestamp of each infection event (t_infect) by
+    # adding the parent's t_infect, to uniformly distributed random
+    # draws from each parent's t_comm (one draw per infection event).
+    t_infect_parents <- rep(parent_layer$t_infect[p_id], times = n_events)
+    t_comm_parents <- rep(parent_layer$t_comm[p_id], times = n_events)
     t_infect <-  t_infect_parents + t_comm_parents * runif(sum(n_events))
+    # Random draws for the number of new infections per infection
+    # event, and the communicable period, for each new infected node.
+    # No need to keep track of parents here.
     n_infect <- extraDistr::rlgser(sum(n_events), p)
     t_comm <- rgamma(sum(n_infect), kappa * tbar, kappa)
+    # When q > 0, the natural communicable period can be interrupted.
     if (q > 0) {
         n_catch <- rbinom(1, sum(n_infect), q)
         if (is.infinite(kappaq)) {
@@ -32,10 +81,31 @@ add_layer <- function(old_layer,
         # t_stop, then shuffle
         t_comm <- sample(pmin(t_comm, t_stop))
     }
-    tibble(t_comm, t_infect = rep(t_infect, times = n_infect))
+    new_layer <- tibble(id = seq_len(sum(n_infect)) + max(parent_layer$id),
+                        id_parent =
+                            rep(parent_layer$id[p_id], times = n_events) %>%
+                            rep(times = n_infect),
+                        t_infect = rep(t_infect, times = n_infect),
+                        t_comm)
+    return(new_layer)
 }
 
-# @export
+#' Simulate a single epidemic path
+#'
+#' For information about input parameters, see the documentation for
+#' \code{\link{add_layer}}. The function starts by generating a single
+#' parent and its communicable period of random duration, and starting
+#' at \code{t_infect = 0}. The function then builds a tree starting at
+#' the initial node by iteratively calling \code{\link{add_layer}},
+#' until it receives an empty tibble, which happens either when the
+#' epidemic extinguishes, or all branches have extended beyond
+#' \code{t_max}.
+#'
+#' @return A list of tibbles, each one containing information about
+#'     new nodes generated from the previous ones. Effectively this is
+#'     a tree.
+#'
+#' @export
 run_model <- function(tmax,
                       tbar,
                       p,
@@ -44,69 +114,49 @@ run_model <- function(tmax,
                       q,
                       mbar,
                       kappaq) {
-    old_layer <- tibble(t_infect = 0, t_comm = rgamma(1, kappa * tbar, kappa))
-    layers <- list(old_layer)
+    # This is the first parent layer: one parent only, with a
+    # communicable period drawn randomly from a Gamma distribution.
+    old_layer <- tibble(id = 1,
+                        id_parent = 0,
+                        id_layer = 1,
+                        t_infect = 0,
+                        t_comm = rgamma(1, kappa * tbar, kappa))
+    # The tree starts with the initial layer
+    layer_count <- 1
+    tree <- list(old_layer)
+    # Call add_layer iteratively, until it returns empty.
     while (nrow(old_layer) > 0) {
+        layer_count <- layer_count + 1
         new_layer <- add_layer(old_layer, tmax, tbar, p, lambda, kappa,
                                q, mbar, kappaq)
-        layers[[length(layers) + 1]] <- new_layer
+        tree[[length(tree) + 1]] <- new_layer %>% mutate(id_layer = layer_count)
         old_layer <- new_layer
     }
-    return(layers)
+    # No need to return the last empty layer
+    return(head(tree, -1))
 }
 
-
-# @export
-process_tree <- function(tree_raw, tmax = Inf) {
-    tree <-
-        tree_raw %>%
-        bind_rows %>%
-        mutate(t_heal = t_infect + t_comm) %>%
-        select(-t_comm) %>%
-        pivot_longer(everything(), names_to = "label", values_to = "time") %>%
-        mutate(delta = ifelse(label == "t_infect", 1, -1)) %>%
-        select(-label) %>%
-        arrange(time) %>%
-        mutate(date = floor(time)) %>%
-        filter(date < tmax)
-
-    if (!is.infinite(tmax)) {
-        all_dates <- seq(0, round(tmax) - 1, by = 1)
-        extra_rows <- tibble(date = setdiff(all_dates, tree[["date"]]),
-                             delta = 0)
-        tree <-
-            bind_rows(tree, extra_rows) %>%
-            arrange(date)
-    }
-
-    tree <-
-        tree %>%
-        group_by(date) %>%
-        summarize(n_infected = sum(delta == 1),
-                  delta = sum(delta)) %>%
-        mutate(n_infected = cumsum(n_infected),
-               n_infectious = cumsum(delta)) %>%
-        select(-delta)
-
-    return(tree)
-}
-
-
-# @export
-process_sims <- function(tree_list,
-                         tmax = Inf,
-                         keep_trees = TRUE) {
-    sim_data <- tibble(sim = 1:length(tree_list),
-                       trees = tree_list,
-                       paths = map(tree_list, ~ process_tree(., tmax = tmax)))
-    if (!keep_trees) {
-        sim_data <- sim_data %>% select(-trees)
-    }
-    return(sim_data)
-}
-
-
-# @export
+#' Multiple path simulations over a range of input parameters
+#'
+#' This function calls \code{\link{run_model}} over a range of input
+#' parameters. It computes \code{nsim} replications for each unique
+#' combination of input parameters.
+#'
+#' @param nsim A non-negative integer. The number of replications for
+#'     each set of input parameters.
+#' @param ... Input parameters for \code{\link{add_layer}}. Each input
+#'     parameter can receive a vector with multiple values. If that is
+#'     the case, then all input parameters should have the same
+#'     length, or one.
+#'
+#' @return A tibble with a column for each input parameter, and a
+#'     list-column \code{treelist}. This is a list of lists of lists.
+#'     Each sublist corresponds to a unique combination of input
+#'     parameters, and contains \code{nsim} trees (i.e. simulated
+#'     paths). Each individual tree is itself a list of tibbles, with
+#'     one tibble for each depth level.
+#'
+#' @export
 run_sims <- function(nsim = 10,
                      tmax = 100,
                      tbar = 10,
@@ -128,14 +178,12 @@ run_sims <- function(nsim = 10,
                    kappaq = kappaq)
     # small functions to run nsim replications using purrr::rerun
     run_reps <- function(...) {
-        reps <-
-            rerun(nsim, run_model(...)) %>%
-            process_sims(keep_trees = keep_trees)
+        reps <- rerun(nsim, run_model(...))
         return(reps)
     }
     # run nsim replications for each row of input args
-    sims <- pmap(args, run_reps)
+    treelist <- pmap(args, run_reps)
     # put results in a tbl, along with sim parameters
-    sims_data <- bind_cols(args, tibble(sims = sims))
-    return(sims_data)
+    sim_data <- bind_cols(args, tibble(treelist))
+    return(sim_data)
 }

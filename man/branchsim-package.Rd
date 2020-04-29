@@ -4,12 +4,17 @@
 \name{branchsim-package}
 \alias{branchsim}
 \alias{branchsim-package}
-\title{branchsim: A branching process simulation of communicable disease}
+\title{branchsim: Branching process simulation of epidemics}
 \description{
-Simulates the evolution of a communicable disease as a branching process. The model allows for the stochastic interruption of a communicable period, to model the effect of contact tracing, for example.
+Simulates the propagation of an epidemic as a branching process. The model allows for the stochastic interruption of communicable periods to study the effect of contact tracing, for example.
 }
 \author{
-\strong{Maintainer}: Jérôme Levesque \email{jerome.levesque@tpsgc-pwgsc.gc.ca} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Jérôme Levesque \email{jerome.levesque@tpsgc-pwgsc.gc.ca}
+
+Authors:
+\itemize{
+  \item David Maybury \email{david.maybury@tpsgc-pwgsc.gc.ca}
+}
 
 }
 \keyword{internal}
