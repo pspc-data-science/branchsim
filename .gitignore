@@ -8,3 +8,4 @@ latex/*.aux
 latex/*.bbl
 latex/*.blg
 latex/*.synctex.gz
+.Rproj.user
