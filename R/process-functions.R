@@ -7,11 +7,17 @@
 #' @param treelist A list of lists. Each sublist corresponds to a
 #'     single tree (i.e. a simulated path). Each tree is itself a list
 #'     of tibbles, with one tibble for each depth level.
+#' @param tmax A positive scalar. The cut point for paths.
+#' @param equalize A logical scalar. If TRUE, make all paths end at
+#'     t_max by calling \code{\link{equalize_paths}}.
+#' 
 #' @export
 treelist_to_paths <- function(treelist,
-                              tmax = Inf) {
-    tibble(id_sim = seq_along(treelist),
-           tree = treelist) %>%
+                              tmax,
+                              equalize = TRUE) {
+    paths <-
+        tibble(id_sim = seq_along(treelist),
+               tree = treelist) %>%
         # first, unnest the sublists
         unnest(tree) %>%
         # second, unnest the tibbles
@@ -39,6 +45,11 @@ treelist_to_paths <- function(treelist,
         ungroup %>%
         select(-starts_with("delta")) %>%
         filter(date <= tmax)
+    # make all paths end at t_max
+    if (equalize) {
+        paths <- equalize_paths(paths, tmax)
+    }
+    return(paths)
 }
 
 
@@ -52,7 +63,6 @@ treelist_to_paths <- function(treelist,
 #' @return A \code{tbl} with the same format as \code{df_paths}, but
 #'     with the last point for each path fixed at \code{tmax}.
 #'
-#' @export
 equalize_paths <- function(df_paths, tmax) {
     # Truncate points beyond tmax
     df_paths <- df_paths %>% filter(date <= tmax)
