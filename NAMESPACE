@@ -3,7 +3,6 @@
 export(add_layer)
 export(build_tree)
 export(equalize_paths)
-export(make_path)
 export(plot_paths)
 export(run_sims)
 export(treelist_to_paths)
