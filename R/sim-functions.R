@@ -84,6 +84,10 @@ add_layer <- function(parent_layer,
     n_parents <- length(p_id)
     # number of infection events for each parent
     n_events <- rpois(n_parents, lambda * parent_layer$t_comm[p_id])
+    # If no events, stop and return NULL
+    if (sum(n_events) == 0) {
+        return(NULL)
+    }
     # Compute the timestamp of each infection event (t_infect) by
     # adding the parent's t_infect, to uniformly distributed random
     # draws from each parent's t_comm (one draw per infection event).
@@ -108,11 +112,12 @@ add_layer <- function(parent_layer,
         # those.
         t_stop <- c(t_stop, rep(Inf, sum(n_infect) - n_catch))
         # For caught individuals, pick the minimum between t_comm and
-        # t_stop, then shuffle
+        # t_stop, then shuffle with `sample`
         if (sum(n_infect) > 1) {
+            # shuffle multiple values with `sample`
             t_comm <- sample(pmin(t_comm, t_stop))
         } else {
-            # `sample` will not work with a single argument
+            # `sample` will not work with a single value
             t_comm <- min(t_comm, t_stop)
         }
     }
@@ -156,16 +161,21 @@ build_tree <- function(nstart,
     # The tree starts with the initial layer
     layer_count <- 1
     tree <- list(old_layer)
-    # Call add_layer iteratively, until it returns empty.
-    while (nrow(old_layer) > 0) {
+    # Call add_layer iteratively, until add_layer returns NULL
+    while (!is.null(old_layer)) {
         layer_count <- layer_count + 1
         new_layer <- add_layer(old_layer, tmax, tbar, p, lambda, kappa,
                                q, mbar, kappaq)
-        tree[[length(tree) + 1]] <- new_layer %>% mutate(id_layer = layer_count)
-        old_layer <- new_layer
+        if (!is.null(new_layer)) {
+            tree[[length(tree) + 1]] <-
+                new_layer %>%
+                mutate(id_layer = layer_count)
+            old_layer <- new_layer
+        } else {
+            break
+        }
     }
-    # No need to return the last empty layer
-    return(head(tree, -1))
+    return(tree)
 }
 
 #' Multiple path simulations over a range of input parameters
