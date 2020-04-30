@@ -109,7 +109,12 @@ add_layer <- function(parent_layer,
         t_stop <- c(t_stop, rep(Inf, sum(n_infect) - n_catch))
         # For caught individuals, pick the minimum between t_comm and
         # t_stop, then shuffle
-        t_comm <- sample(pmin(t_comm, t_stop))
+        if (sum(n_infect) > 1) {
+            t_comm <- sample(pmin(t_comm, t_stop))
+        } else {
+            # `sample` will not work with a single argument
+            t_comm <- min(t_comm, t_stop)
+        }
     }
     new_layer <- tibble(id = seq_len(sum(n_infect)) + max(parent_layer$id),
                         id_parent =
