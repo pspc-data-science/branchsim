@@ -51,10 +51,15 @@ plot_paths <- function(paths_data,
         geom_step(alpha = .3) +
         labs(x = "Time") +
         theme_bw() +
-        scale_x_continuous(expand = c(NA, max_date)) +
         scale_y_log10(limits = c(1, max_y))
     # Show distribution of paths position at the end
     if (show_hist) {
+        # Adjust margins so the plots are joined perfectly.
+        # First for plt1:
+        plt1 <-
+            plt1 +
+            scale_x_continuous(expand = c(NA, max_date))
+        # Then plt2:
         margins <- theme_get()[["plot.margin"]]
         margins[4] <- unit(-10, "pt")
         plt2 <-
@@ -64,13 +69,15 @@ plot_paths <- function(paths_data,
             ggplot(aes(!!y_var, ..density..)) +
             geom_histogram() +
             scale_x_log10(limits = c(1, max_y)) +
+            scale_y_continuous(expand = expansion(mult = c(0, .05))) +
             theme_bw() +
             coord_flip() +
             theme(axis.title.y = element_blank(),
                   axis.text.y = element_blank(),
                   axis.ticks.y = element_blank(),
+                  axis.text.x = element_blank(),
                   plot.margin = margins)
-        return(egg::ggarrange(plt1 + coord_cartesian(xlim = c(0, max_date)), plt2, widths = c(5, 1)))
+        return(egg::ggarrange(plt1, plt2, widths = c(5, 1)))
     } else {
         return(plt1)
     }
