@@ -1,3 +1,33 @@
+#' Initialize the tree
+#'
+#' Creates the first layer of a tree.
+#'
+#' @param n_start An integer greater or equal to 1. Number of nodes in
+#'     the initial layer.
+#' @param tbar A non-negative scalar. Average duration of the
+#'     communicable windows of the new nodes. Together with
+#'     \code{kappa}, it determines a shape parameter \code{tbar *
+#'     kappa} for the the Gamma distribution from which we draw a
+#'     communicable period for each new node.
+#' @param kappa A non-negative scalar (including \code{Inf}). Rate
+#'     parameter for the Gamma distribution from which we draw a
+#'     communicable period duration for each new node. If \code{kappa
+#'     = Inf}, then the draw is deterministic, and all communicable
+#'     periods are exactly equal to \code{tbar}.
+#' 
+#' @return A \code{tibble} with one row for each new node, and three
+#'     columns: \code{id_parent}, \code{t_infect}, and \code{t_comm}.
+#'
+make_first_layer <- function(n_start, tbar, kappa) {
+      first_layer <- tibble(id = seq_len(n_start),
+                            id_parent = 0,
+                            id_layer = 1,
+                            t_infect = 0,
+                            t_comm = rgamma(n_start, kappa * tbar, kappa))
+      return(first_layer)
+}
+
+
 #' Builds the next generation of nodes in a tree
 #'
 #' Given a set of parent nodes and their properties, this function
@@ -106,21 +136,18 @@ add_layer <- function(parent_layer,
 #'     a tree.
 #'
 #' @export
-run_model <- function(tmax,
-                      tbar,
-                      p,
-                      lambda,
-                      kappa,
-                      q,
-                      mbar,
-                      kappaq) {
+build_tree <- function(nstart,
+                       tmax,
+                       tbar,
+                       p,
+                       lambda,
+                       kappa,
+                       q,
+                       mbar,
+                       kappaq) {
     # This is the first parent layer: one parent only, with a
     # communicable period drawn randomly from a Gamma distribution.
-    old_layer <- tibble(id = 1,
-                        id_parent = 0,
-                        id_layer = 1,
-                        t_infect = 0,
-                        t_comm = rgamma(1, kappa * tbar, kappa))
+    old_layer <- make_first_layer(nstart, tbar, kappa)
     # The tree starts with the initial layer
     layer_count <- 1
     tree <- list(old_layer)
@@ -138,7 +165,7 @@ run_model <- function(tmax,
 
 #' Multiple path simulations over a range of input parameters
 #'
-#' This function calls \code{\link{run_model}} over a range of input
+#' This function calls \code{\link{build_tree}} over a range of input
 #' parameters. It computes \code{nsim} replications for each unique
 #' combination of input parameters.
 #'
@@ -158,6 +185,7 @@ run_model <- function(tmax,
 #'
 #' @export
 run_sims <- function(nsim = 10,
+                     nstart = 1,
                      tmax = 100,
                      tbar = 10,
                      p = .5,
@@ -168,17 +196,18 @@ run_sims <- function(nsim = 10,
                      kappaq = 3,
                      keep_trees = TRUE) {
     # input arguments
-    args <- tibble(tmax = tmax,
-                   tbar = tbar,
-                   p = p,
-                   lambda = lambda,
-                   kappa = kappa,
-                   q = q,
-                   mbar = mbar,
-                   kappaq = kappaq)
+    args <- tibble(nstart,
+                   tmax,
+                   tbar,
+                   p,
+                   lambda,
+                   kappa,
+                   q,
+                   mbar,
+                   kappaq)
     # small functions to run nsim replications using purrr::rerun
     run_reps <- function(...) {
-        reps <- rerun(nsim, run_model(...))
+        reps <- rerun(nsim, build_tree(...))
         return(reps)
     }
     # run nsim replications for each row of input args

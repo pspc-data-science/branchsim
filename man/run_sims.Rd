@@ -6,6 +6,7 @@
 \usage{
 run_sims(
   nsim = 10,
+  nstart = 1,
   tmax = 100,
   tbar = 10,
   p = 0.5,
@@ -35,7 +36,7 @@ paths). Each individual tree is itself a list of tibbles, with
 one tibble for each depth level.
 }
 \description{
-This function calls \code{\link{run_model}} over a range of input
+This function calls \code{\link{build_tree}} over a range of input
 parameters. It computes \code{nsim} replications for each unique
 combination of input parameters.
 }
