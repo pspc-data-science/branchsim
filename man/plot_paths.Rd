@@ -4,7 +4,13 @@
 \alias{plot_paths}
 \title{Plot epidemic paths}
 \usage{
-plot_paths(paths_data, y_var = n_infected, n_max = 200)
+plot_paths(
+  paths_data,
+  y_var = n_infected,
+  n_max = 200,
+  show_hist = TRUE,
+  show_1_mass = FALSE
+)
 }
 \arguments{
 \item{paths_data}{A \code{data.frame}, with at least the columns
@@ -15,6 +21,18 @@ plot_paths(paths_data, y_var = n_infected, n_max = 200)
 
 \item{n_max}{An integer. Maximum number of paths to display. Useful
 to avoid graphs that are too crowded.}
+
+\item{show_hist}{A logical scalar. If \code{TRUE}, show the
+distribution of paths at the end.}
+
+\item{show_1_mass}{A logical scalar. Show the probability mass at
+\code{y_var = 1}. When \code{y_var} is \code{n_infected}, this
+corresponds to epidemics that did not continue past the first
+infected individual. NOTE: this parameter is meaningful only
+when \code{show_hist} is \code{TRUE}.}
+}
+\value{
+A plot.
 }
 \description{
 Plot epidemic paths
