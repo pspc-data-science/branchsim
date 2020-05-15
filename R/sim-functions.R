@@ -21,7 +21,7 @@
 make_first_layer <- function(n_start, tbar, kappa) {
       first_layer <- tibble(id = seq_len(n_start),
                             id_parent = 0,
-                            id_layer = 1,
+                            id_layer = 1L,
                             t_infect = 0,
                             t_comm = rgamma(n_start, kappa * tbar, kappa))
       return(first_layer)
@@ -130,6 +130,7 @@ add_layer <- function(parent_layer,
     return(new_layer)
 }
 
+
 #' Simulate a single epidemic path
 #'
 #' For information about input parameters, see the documentation for
@@ -154,16 +155,17 @@ build_tree <- function(nstart,
                        kappa,
                        q,
                        mbar,
-                       kappaq) {
+                       kappaq,
+                       ceil) {
     # This is the first parent layer: one parent only, with a
     # communicable period drawn randomly from a Gamma distribution.
     old_layer <- make_first_layer(nstart, tbar, kappa)
     # The tree starts with the initial layer
-    layer_count <- 1
+    layer_count <- 1L
     tree <- list(old_layer)
     # Call add_layer iteratively, until add_layer returns NULL
-    while (!is.null(old_layer)) {
-        layer_count <- layer_count + 1
+    while (!is.null(old_layer) & max(old_layer[["id"]]) < ceil) {
+        layer_count <- layer_count + 1L
         new_layer <- add_layer(old_layer, tmax, tbar, p, lambda, kappa,
                                q, mbar, kappaq)
         if (!is.null(new_layer)) {
@@ -177,6 +179,7 @@ build_tree <- function(nstart,
     }
     return(tree)
 }
+
 
 #' Multiple path simulations over a range of input parameters
 #'
@@ -209,7 +212,7 @@ run_sims <- function(nsim = 10,
                      q = .6,
                      mbar = 5,
                      kappaq = 3,
-                     keep_trees = TRUE) {
+                     ceil = Inf) {
     # input arguments
     args <- tibble(nstart,
                    tmax,
@@ -219,7 +222,8 @@ run_sims <- function(nsim = 10,
                    kappa,
                    q,
                    mbar,
-                   kappaq)
+                   kappaq,
+                   ceil)
     # small functions to run nsim replications using purrr::rerun
     run_reps <- function(...) {
         reps <- rerun(nsim, build_tree(...))
