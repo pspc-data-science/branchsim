@@ -33,18 +33,17 @@ treelist_to_paths <- function(treelist,
         pivot_longer(cols = c(t_infect, t_heal),
                      names_to = "label",
                      values_to = "time") %>%
-        mutate(date = floor(time),
-               delta_pos = (label == "t_infect"),
+        mutate(delta_pos = (label == "t_infect"),
                delta = ifelse(delta_pos, 1, -1)) %>%
-        select(-time, -label) %>%
-        group_by(id_sim, date) %>%
+        select(-label) %>%
+        group_by(id_sim, time) %>%
         summarize_at(vars(delta, delta_pos), sum) %>%
         mutate(n_infected = cumsum(delta_pos),
                n_infectious = cumsum(delta)) %>%
         # cleanup
         ungroup %>%
         select(-starts_with("delta")) %>%
-        filter(date <= tmax)
+        filter(time <= tmax)
     # make all paths end at t_max
     if (equalize) {
         paths <- equalize_paths(paths, tmax)
@@ -65,18 +64,45 @@ treelist_to_paths <- function(treelist,
 #'
 equalize_paths <- function(df_paths, tmax) {
     # Truncate points beyond tmax
-    df_paths <- df_paths %>% filter(date <= tmax)
+    df_paths <- df_paths %>% filter(time <= tmax)
     # Extend paths that need it
     tails <-
         df_paths %>%
-        arrange(date) %>%
+        arrange(time) %>%
         group_by(id_sim) %>%
         summarize_all(~ tail(., 1)) %>%
-        filter(date < tmax) %>%
-        mutate(date = tmax)
+        filter(time < tmax) %>%
+        mutate(time = tmax)
     # Add extensions to truncated paths
     df_paths_equal <-
         bind_rows(df_paths, tails) %>%
-        arrange (id_sim, date)
+        arrange (id_sim, time)
     return(df_paths_equal)
+}
+
+
+get_extinction_data <- function(treelist, tmax = Inf, ceil = Inf) {
+    tibble(tree = map(treelist, bind_rows),
+           id_sim = seq_along(tree)) %>%
+        unnest(tree) %>%
+        group_by(id_sim) %>%
+        summarize(id_ext = which.max(t_infect + t_comm),
+                  t_ext = t_infect[id_ext] + t_comm[id_ext],
+                  id_max = max(id),
+                  gen_ext = id_layer[id_ext],
+                  gen_max = max(id_layer)) %>%
+        filter(t_ext < tmax & id_max < ceil)
+}
+
+
+as_tidygraph <- function(tree) {
+    # If tree is passed as a list, this will convert it to a tibble
+    tree <- tree %>% bind_rows
+    # Generate `nodes`, `edges`, and `graph`
+    nodes <- tree
+    edges <-
+        tree %>%
+        select(from = id_parent, to = id) %>%
+        tail(-1)
+    graph <- tidygraph::tbl_graph(nodes = nodes, edges = edges)
 }
