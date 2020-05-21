@@ -1,7 +1,7 @@
 #' Plot epidemic paths
 #'
 #' @param paths_data A \code{data.frame}, with at least the columns
-#'     \code{id_sim}, \code{date}, and a quoted variable passed as
+#'     \code{id_sim}, \code{time}, and a quoted variable passed as
 #'     \code{yvar}.
 #' @param y_var Column in \code{paths_data} to use as y-variable.
 #' @param n_max An integer. Maximum number of paths to display. Useful
@@ -36,6 +36,7 @@ plot_paths <- function(paths_data,
         paths_data %>%
         pull(!!y_var) %>%
         max
+    max_y <- max_y + 10
     min_y <-
         paths_data %>%
         pull(!!y_var) %>%
@@ -43,32 +44,32 @@ plot_paths <- function(paths_data,
     if (min_y == 1 & show_1_mass) {
         min_y <- 0.5
     }
-    max_date <- max(paths_data[["date"]])
+    max_time <- max(paths_data[["time"]])
     # Plot paths
     plt1 <-
         paths_plt %>%
-        ggplot(aes(date, !!y_var, group = id_sim)) +
+        ggplot(aes(time, !!y_var, group = id_sim)) +
         geom_step(alpha = .3) +
         labs(x = "Time") +
         theme_bw() +
-        scale_y_log10(limits = c(1, max_y))
+        scale_y_log10(limits = c(min_y, max_y))
     # Show distribution of paths position at the end
     if (show_hist) {
         # Adjust margins so the plots are joined perfectly.
         # First for plt1:
         plt1 <-
             plt1 +
-            scale_x_continuous(expand = c(NA, max_date))
+            scale_x_continuous(expand = c(NA, max_time))
         # Then plt2:
         margins <- theme_get()[["plot.margin"]]
         margins[4] <- unit(-10, "pt")
         plt2 <-
             paths_data %>%
             filter(!!y_var > min_y) %>%
-            filter(date == max_date) %>%
+            filter(time == max_time) %>%
             ggplot(aes(!!y_var, ..density..)) +
             geom_histogram() +
-            scale_x_log10(limits = c(1, max_y)) +
+            scale_x_log10(limits = c(min_y, max_y)) +
             scale_y_continuous(expand = expansion(mult = c(0, .05))) +
             theme_bw() +
             coord_flip() +
