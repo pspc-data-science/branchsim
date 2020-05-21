@@ -14,7 +14,7 @@ plot_paths(
 }
 \arguments{
 \item{paths_data}{A \code{data.frame}, with at least the columns
-\code{id_sim}, \code{date}, and a quoted variable passed as
+\code{id_sim}, \code{time}, and a quoted variable passed as
 \code{yvar}.}
 
 \item{y_var}{Column in \code{paths_data} to use as y-variable.}

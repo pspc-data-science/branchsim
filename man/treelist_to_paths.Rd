@@ -4,12 +4,17 @@
 \alias{treelist_to_paths}
 \title{Compute paths from a list of trees}
 \usage{
-treelist_to_paths(treelist, tmax = Inf)
+treelist_to_paths(treelist, tmax, equalize = TRUE)
 }
 \arguments{
 \item{treelist}{A list of lists. Each sublist corresponds to a
 single tree (i.e. a simulated path). Each tree is itself a list
 of tibbles, with one tibble for each depth level.}
+
+\item{tmax}{A positive scalar. The cut point for paths.}
+
+\item{equalize}{A logical scalar. If TRUE, make all paths end at
+t_max by calling \code{\link{equalize_paths}}.}
 }
 \description{
 This function computes paths from all trees at once; it is much

@@ -4,7 +4,7 @@
 \alias{build_tree}
 \title{Simulate a single epidemic path}
 \usage{
-build_tree(nstart, tmax, tbar, p, lambda, kappa, q, mbar, kappaq)
+build_tree(nstart, tmax, tbar, p, lambda, kappa, q, mbar, kappaq, ceil)
 }
 \value{
 A list of tibbles, each one containing information about

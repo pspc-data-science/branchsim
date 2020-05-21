@@ -15,7 +15,7 @@ run_sims(
   q = 0.6,
   mbar = 5,
   kappaq = 3,
-  keep_trees = TRUE
+  ceil = Inf
 )
 }
 \arguments{
