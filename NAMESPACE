@@ -2,8 +2,10 @@
 
 export(G)
 export(add_layer)
+export(average_component_size)
 export(build_tree)
 export(dMu)
+export(derivative_generating_function)
 export(generating_function)
 export(get_extinct_prob)
 export(get_malthusian)

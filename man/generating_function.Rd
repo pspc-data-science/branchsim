@@ -2,7 +2,7 @@
 % Please edit documentation in R/CMJ-functions.R
 \name{generating_function}
 \alias{generating_function}
-\title{The generationg function of the branching process f(s) = sum_k p_k s^k.}
+\title{The generating function of the branching process f(s) = sum_k p_k s^k.}
 \usage{
 generating_function(s, a = 10, b = 1, lambda = 0.11, p = 0.5)
 }
@@ -22,5 +22,5 @@ Default p=0.5}
 The evaluation the generating function at s.
 }
 \description{
-The generationg function of the branching process f(s) = sum_k p_k s^k.
+The generating function of the branching process f(s) = sum_k p_k s^k.
 }
