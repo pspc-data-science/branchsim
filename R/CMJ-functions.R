@@ -148,7 +148,7 @@ get_extinct_prob<- function(a=10, b=1, lambda = .11, p=.5){
   
 }
 
-#' The generationg function of the branching process f(s) = sum_k p_k s^k.
+#' The generating function of the branching process f(s) = sum_k p_k s^k.
 #'
 #' @param s The argument of the geberating function. 0<s<1.
 #' @param a The shape parameter of the gamma life time distribution. Default a =10
@@ -168,33 +168,59 @@ generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
   return(result)
 }
 
-# derivative_generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
-#   r = -lambda/log(1-p)
-# 
-#   result<- a*(1-r/b*log((1-p)/(1-p*s)))^(-a-1)*r/b*p/(1-p*s)
-# 
-#   return(result)
-# }
-# 
-# ave_comp<- function(u, A=10, B=1, Lambda = .11, P=.5){
-# 
-#   R = -Lambda/log(1-P)
-#   z<- R*P/(1-P)*A
-# 
-#   if(z>=1){
-#   s<- seq(u,1, length.out = 1000)
-#   S<- pracma::trapz(s, generating_function(s, a = A, b = B, lambda = Lambda, p = P))*z
-# 
-#   y<- 1 - derivative_generating_function(u, a = A, b = B, lambda = Lambda, p = P)
-# 
-#   result<- 1 + (z*u^2)/((1-S)*y)}else{
-#   result<- 1/(1-z)
-#   }
-# 
-#   return(result)
-# 
-# 
-# }
-# 
+
+#' The derivative of the generating function of the branching process f(s) = sum_k p_k s^k.
+#'
+#' @param s The argument of the geberating function. 0<s<1.
+#' @param a The shape parameter of the gamma life time distribution. Default a =10
+#' @param b The rate parameter of the gamma life time distribution. Default b = 1
+#' @param lambda The arrival rate of infectious interactions. Default lambda = .11
+#' @param p The parameter of the logarithmic distribution for the number of infected during an event.
+#' Default p=0.5
+#' 
+#' @return The evaluation the derivative of the generating function at s.
+#'
+#' @export
+derivative_generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
+  r = -lambda/log(1-p)
+
+  result<- a*(1-r/b*log((1-p)/(1-p*s)))^(-a-1)*r/b*p/(1-p*s)
+
+  return(result)
+}
+
+
+#' The saverage component size of paths that go extinct.
+#'
+#' @param u The extinction probability
+#' @param A The shape parameter of the gamma life time distribution. Default a =10
+#' @param B The rate parameter of the gamma life time distribution. Default b = 1
+#' @param Lambda The arrival rate of infectious interactions. Default lambda = .11
+#' @param P The parameter of the logarithmic distribution for the number of infected during an event.
+#' Default p=0.5
+#' 
+#' @return The average component size.
+#'
+#' @export
+average_component_size<- function(u, A=10, B=1, Lambda = .11, P=.5){
+
+  R = -Lambda/log(1-P)
+  z<- R*P/(1-P)*A
+
+  #if(z>=1){
+  s<- seq(u,1, length.out = 1000)
+  S<- pracma::trapz(s, generating_function(s, a = A, b = B, lambda = Lambda, p = P))*z
+
+  y<- 1 - derivative_generating_function(u, a = A, b = B, lambda = Lambda, p = P)
+
+  result<- 1 + (z*u^2)/((1-S)*y)#}else{
+  #result<- 1/(1-z)
+  #}
+
+  return(result)
+
+
+}
+
 
 
