@@ -21,8 +21,7 @@ plot_paths <- function(paths_data,
                        y_var = n_infected,
                        n_max = 200,
                        show_hist = TRUE,
-                       show_1_mass = FALSE) {
-    y_var <- enquo(y_var)
+                       show_extinct = TRUE) {
     # Sample down to n_max paths if required
     if (length(unique(paths_data[["id_sim"]])) > n_max) {
         paths_plt <-
@@ -31,52 +30,71 @@ plot_paths <- function(paths_data,
     } else {
         paths_plt <- paths_data
     }
+    # Tweak extinct paths y-value for plotting
+    min_infectious = exp(- .05 * max(log(paths_data[["n_infected"]])))
+    paths_plt <-
+        paths_data %>%
+        mutate(is_extinct = n_infectious == 0) %>%
+        mutate(n_infectious = ifelse(n_infectious == 0,
+                                     min_infectious,
+                                     n_infectious))
+    if (!show_extinct) {
+        paths_plt <- paths_plt %>% filter(!is_extinct)
+    }
+    y_var <- enquo(y_var)
     # Pick y_var limits
     max_y <-
-        paths_data %>%
+        paths_plt %>%
         pull(!!y_var) %>%
         max
-    max_y <- max_y + 10
     min_y <-
-        paths_data %>%
+        paths_plt %>%
         pull(!!y_var) %>%
         min
-    if (min_y == 1 & show_1_mass) {
-        min_y <- 0.5
-    }
-    max_time <- max(paths_data[["time"]])
+    bin_width <- (log(max_y, 10) - log(min_y, 10)) / 100
+    max_y <- 10^(log(max_y, 10) + bin_width)
+    min_y <- 10^(log(min_y, 10) - bin_width)
     # Plot paths
     plt1 <-
-        paths_plt %>%
-        ggplot(aes(time, !!y_var, group = id_sim)) +
-        geom_step(alpha = .3) +
+        paths_plt  %>%
+        filter(id_sim %in% sample(unique(id_sim), min(max(id_sim), n_max))) %>%
+        ggplot(aes(time, !!y_var, group = id_sim, color = is_extinct)) +
+        geom_step(alpha = .3, show.legend = FALSE) +
         labs(x = "Time") +
         theme_bw() +
-        scale_y_log10(limits = c(min_y, max_y))
+        scale_x_continuous(expand = expansion(c(0, 0))) +
+        scale_y_log10(limits = c(min_y, max_y),
+                      expand = expansion(c(0, .05))) +
+        scale_color_manual(values = c("TRUE" = "red",
+                                         "FALSE" = "black"))
     # Show distribution of paths position at the end
     if (show_hist) {
         # Adjust margins so the plots are joined perfectly.
-        # First for plt1:
-        plt1 <-
-            plt1 +
-            scale_x_continuous(expand = c(NA, max_time))
-        # Then plt2:
+        max_time <- max(paths_plt[["time"]])
         margins <- theme_get()[["plot.margin"]]
-        margins[4] <- unit(-10, "pt")
+        margins[4] <- unit(-8, "pt")
         plt2 <-
-            paths_data %>%
-            filter(!!y_var > min_y) %>%
+            paths_plt %>%
             filter(time == max_time) %>%
             ggplot(aes(!!y_var, ..density..)) +
-            geom_histogram() +
-            scale_x_log10(limits = c(min_y, max_y)) +
+            geom_histogram(aes(fill = is_extinct),
+                           binwidth = bin_width,
+                           alpha = .5,
+                           show.legend = show_extinct) +
+            scale_fill_manual(values = c("TRUE" = "red",
+                                         "FALSE" = "black")) +
+            scale_x_log10(limits = c(min_y, max_y),
+                          expand = expansion(c(0, .05))) +
             scale_y_continuous(expand = expansion(mult = c(0, .05))) +
+            labs(fill = "extinct") +
             theme_bw() +
             coord_flip() +
             theme(axis.title.y = element_blank(),
                   axis.text.y = element_blank(),
                   axis.ticks.y = element_blank(),
                   axis.text.x = element_blank(),
+                  panel.grid.major.x = element_blank(),
+                  panel.grid.minor.x = element_blank(),
                   plot.margin = margins)
         return(egg::ggarrange(plt1, plt2, widths = c(5, 1)))
     } else {

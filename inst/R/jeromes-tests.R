@@ -3,7 +3,9 @@ library(ggraph)
 ggraph::set_graph_style(plot_margin = margin(1,1,1,1))
 
 set.seed(123)
-branchsim::run_sims(nsim = 10, tmax = 20)
+sims <-
+    branchsim::run_sims(nsim = 1000, tmax = 20) %>%
+    mutate(paths = map2(treelist, tmax, treelist_to_paths))
 
 # Plot as dendogram
 sims[["treelist"]][[1]][[6]] %>%
