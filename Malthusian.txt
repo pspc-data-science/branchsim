@@ -1,0 +1,38 @@
+
+model{
+  #Priors
+   r ~ dunif(0, .8)
+   #r ~ dgamma(.15, 1)
+   #r ~ dexp(1)
+   #p ~ dbeta(2,2)
+   p~dunif(0, .99)
+   
+
+   tau.eps<- 1/(sigma.eps*sigma.eps)
+   sigma.eps~ dunif(.001,10)
+   
+   ind1<- ifelse(r>max(rgrid),300, sum(rgrid<r))
+   #ind1<-  sum(rgrid<r)
+
+   ind2<- ifelse(p>max(pgrid),300, sum(pgrid<p))
+   Alpha<- M[ind1, ind2]
+   
+   m <- r*p/(1-p)
+   BetaP<- (1 - 10*m*(1/(Alpha+1))^(10+1))
+   
+   beta[1]<- BetaP
+   beta[2]<- Alpha
+   
+   for(ii in 1:N){
+     
+     Lcount[ii] ~ dnorm(mu[ii], tau.eps)
+     mu[ii]<- eta[ii]
+     
+     eta[ii]<- inprod(beta[], X[ii,])
+   }
+   
+   
+   
+}
+
+
