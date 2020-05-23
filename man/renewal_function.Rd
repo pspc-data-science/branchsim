@@ -7,10 +7,10 @@
 renewal_function(dMu, G = 1, T = 100, nstep = 10000)
 }
 \arguments{
-\item{dMu}{The function dMu(t) that defines mu(dt) = dMu(t) dt.}
+\item{dMu}{The function dMu(t) that defines mu(dt) = dMu(t) dt. Function as argument.}
 
 \item{G}{A function that that defines the expectation of the random characteristic of interest. Set to G=1
-by default (total number born).}
+by default (total number born). Function as argument.}
 
 \item{T}{The maximum of the time interval for integration 0,T.}
 

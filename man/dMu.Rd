@@ -4,22 +4,20 @@
 \alias{dMu}
 \title{A function for the infinitesimal expectation in births: mu(dt) = dMu(t) dt}
 \usage{
-dMu(t, a = 10, b = 1, lambda = 0.11, p = 0.5)
+dMu(A = 10, B = 1, Lambda = 0.11, P = 0.5)
 }
 \arguments{
-\item{t}{A vector of time evaluations}
+\item{A}{The shape parameter of the gamma life time distribution. Default A =10}
 
-\item{a}{The shape parameter of the gamma life time distribution. Default a =10}
+\item{B}{The rate parameter of the gamma life time distribution. Default B = 1}
 
-\item{b}{The rate parameter of the gamma life time distribution. Default b = 1}
+\item{Lambda}{The arrival rate of infectious interactions. Default Lambda = .11}
 
-\item{lambda}{The arrival rate of infectious interactions. Default lambda = .11}
-
-\item{p}{The parameter of the logarithmic distribution for the number of infected during an event.
-Default p=0.5}
+\item{P}{The parameter of the logarithmic distribution for the number of infected during an event.
+Default P=0.5}
 }
 \value{
-Function evaluation at time vector t.
+A function of t: dMu(t).
 }
 \description{
 A function for the infinitesimal expectation in births: mu(dt) = dMu(t) dt

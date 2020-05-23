@@ -2,24 +2,22 @@
 % Please edit documentation in R/CMJ-functions.R
 \name{G}
 \alias{G}
-\title{A function for the expecation for the number of idividuals existing in the process at moment t.
-Used with the renewal eqaution, it will give the expectation for the instantaneous number infected
+\title{A function for the expecation for the number of individuals existing in the process at moment t.
+Used with the renewal equation, it will give the expectation for the instantaneous number infected
 as a function of time.}
 \usage{
-G(t, a = 10, b = 1)
+G(A = 10, B = 1)
 }
 \arguments{
-\item{t}{A vector of time evaluations}
+\item{A}{The shape parameter of the gamma life time distribution. Default a =10}
 
-\item{a}{The shape parameter of the gamma life time distribution. Default a =10}
-
-\item{b}{The rate parameter of the gamma life time distribution. Default b = 1}
+\item{B}{The rate parameter of the gamma life time distribution. Default b = 1}
 }
 \value{
-Function evaluation at time vector t.
+A function G(t) = 1 - F(t); F(t) is the life-time distribution.
 }
 \description{
-A function for the expecation for the number of idividuals existing in the process at moment t.
-Used with the renewal eqaution, it will give the expectation for the instantaneous number infected
+A function for the expecation for the number of individuals existing in the process at moment t.
+Used with the renewal equation, it will give the expectation for the instantaneous number infected
 as a function of time.
 }
