@@ -134,7 +134,12 @@ get_extinct_prob<- function(a=10, b=1, lambda = .11, p=.5){
     (1-r/b*log((1-p)/(1-p*s)))^(-a) - s
   }
   
-  uniroot(extinct_prob, c(.001,.999))$root
+  result<- tryCatch({uniroot(extinct_prob, c(0,.999))$root},
+                    error = function(e){
+                      1
+                    })
+  
+  return(result)
   
 }
 
@@ -160,30 +165,30 @@ generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 
 # derivative_generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 #   r = -lambda/log(1-p)
-#   
+# 
 #   result<- a*(1-r/b*log((1-p)/(1-p*s)))^(-a-1)*r/b*p/(1-p*s)
-#   
+# 
 #   return(result)
 # }
 # 
 # ave_comp<- function(u, A=10, B=1, Lambda = .11, P=.5){
-#   
+# 
 #   R = -Lambda/log(1-P)
 #   z<- R*P/(1-P)*A
-#   
+# 
 #   if(z>=1){
-#   s<- seq(0,u, length.out = 1000)
-#   S<- pracma::trapz(s, generating_function(s, a = A, b = B, lambda = lambda, p = P))*z
-#   
-#   y<- 1 - derivative_generating_function(u,  a = A, b = B, lambda = lambda, p = P)
-#   
-#   result<- 1 + z*u^2/((1-S)*y)}else{
-#   result<- 1/(1-z)  
+#   s<- seq(u,1, length.out = 1000)
+#   S<- pracma::trapz(s, generating_function(s, a = A, b = B, lambda = Lambda, p = P))*z
+# 
+#   y<- 1 - derivative_generating_function(u, a = A, b = B, lambda = Lambda, p = P)
+# 
+#   result<- 1 + (z*u^2)/((1-S)*y)}else{
+#   result<- 1/(1-z)
 #   }
-#   
+# 
 #   return(result)
 # 
-#   
+# 
 # }
 # 
 
