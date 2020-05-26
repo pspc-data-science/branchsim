@@ -190,7 +190,7 @@ derivative_generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 }
 
 
-#' The saverage component size of paths that go extinct.
+#' The average component size of paths that go extinct.
 #'
 #' @param u The extinction probability
 #' @param A The shape parameter of the gamma life time distribution. Default a =10
@@ -205,17 +205,18 @@ derivative_generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 average_component_size<- function(u, A=10, B=1, Lambda = .11, P=.5){
 
   R = -Lambda/log(1-P)
-  z<- R*P/(1-P)*A
+  Z<- R*P/(1-P)*A
 
-  #if(z>=1){
+  if(Z>=1){
   s<- seq(u,1, length.out = 1000)
-  S<- pracma::trapz(s, generating_function(s, a = A, b = B, lambda = Lambda, p = P))*z
+  
+  z<- (1-u)/(pracma::trapz(s, generating_function(s, a = A, b = B, lambda = Lambda, p = P)))
 
   y<- 1 - derivative_generating_function(u, a = A, b = B, lambda = Lambda, p = P)
 
-  result<- 1 + (z*u^2)/((1-S)*y)#}else{
-  #result<- 1/(1-z)
-  #}
+  result<- 1 + (z*u)/y}else{
+  result<- 1/(1-Z)
+  }
 
   return(result)
 
