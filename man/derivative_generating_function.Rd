@@ -7,7 +7,7 @@
 derivative_generating_function(s, a = 10, b = 1, lambda = 0.11, p = 0.5)
 }
 \arguments{
-\item{s}{The argument of the geberating function. 0<s<1.}
+\item{s}{The argument of the generating function. 0<s<1.}
 
 \item{a}{The shape parameter of the gamma life time distribution. Default a =10}
 

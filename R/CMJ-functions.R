@@ -46,7 +46,6 @@ renewal_function<- function(dMu, G=1, T=100, nstep = 10000){
 #' @return A function of t: dMu(t).
 #'
 #' @export
-
 dMu<- function(A=10, B=1, Lambda = .11, P = 0.5){
 
   dmu<- function(t, a=A, b=B, lambda = Lambda, p = P){
