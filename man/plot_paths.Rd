@@ -9,7 +9,7 @@ plot_paths(
   y_var = n_infected,
   n_max = 200,
   show_hist = TRUE,
-  show_1_mass = FALSE
+  show_extinct = TRUE
 )
 }
 \arguments{

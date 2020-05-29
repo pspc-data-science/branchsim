@@ -150,7 +150,7 @@ get_extinct_prob<- function(a=10, b=1, lambda = .11, p=.5){
 
 #' The generating function of the branching process f(s) = sum_k p_k s^k.
 #'
-#' @param s The argument of the geberating function. 0<s<1.
+#' @param s The argument of the generating function. 0<s<1.
 #' @param a The shape parameter of the gamma life time distribution. Default a =10
 #' @param b The rate parameter of the gamma life time distribution. Default b = 1
 #' @param lambda The arrival rate of infectious interactions. Default lambda = .11
@@ -171,7 +171,7 @@ generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 
 #' The derivative of the generating function of the branching process f(s) = sum_k p_k s^k.
 #'
-#' @param s The argument of the geberating function. 0<s<1.
+#' @param s The argument of the generating function. 0<s<1.
 #' @param a The shape parameter of the gamma life time distribution. Default a =10
 #' @param b The rate parameter of the gamma life time distribution. Default b = 1
 #' @param lambda The arrival rate of infectious interactions. Default lambda = .11
@@ -222,6 +222,132 @@ average_component_size<- function(u, A=10, B=1, Lambda = .11, P=.5){
 
 
 }
+
+#' Get the shape and rate parameter of a gamma distribution given an integration interval and mean.
+#'
+#' @param m The mean of the gamma distribution.
+#' @param a The lower limit of integration. Default is a=0
+#' @param b The upper limit of intefration. Default is b=11.5
+#' @param int_value The confidence level int_a^b f(x) dx = int_value. Default is int_value = .975
+#' @param P The parameter of the logarithmic distribution for the number of infected during an event.
+#' Default p=0.5
+#' 
+#' @return The average component size.
+#'
+#' @export
+find_gamma_parameters<- function(m=5.5,a=0,b=11.5, int_value = .975){
+  
+  x<- seq(a,b, length.out = 10000)
+  
+  alpha_fun<- function(alpha_out){
+    
+    int_fun<- function(a_in){
+      pracma::trapz(x, x^(a_in-1)*exp(-a_in*x/m))
+    }
+    
+    int_fun<- Vectorize(int_fun)
+    
+    result<- (alpha_out/m)^alpha_out*1/gamma(alpha_out)*int_fun(alpha_out) -int_value
+    
+    #result<- result[!is.nan(result)]
+    return(result)
+  }
+  
+  alpha_gamma<- uniroot(alpha_fun, c(1,25))$root
+  beta_gamma<- alpha_gamma/m
+  c(alpha_gamma, beta_gamma)
+  
+}
+
+#' The characteristic function of the branching process.
+#'
+#' @param u The argument of the geberating function.
+#' @param a The shape parameter of the gamma life time distribution. Default a =10
+#' @param b The rate parameter of the gamma life time distribution. Default b = 1
+#' @param lambda The arrival rate of infectious interactions. Default lambda = .11
+#' @param p The parameter of the logarithmic distribution for the number of infected during an event.
+#' Default p=0.5
+#' 
+#' @return The evaluation the characteristic function at u.
+#'
+#' @export
+char_function<- function(u, a=10, b=1, lambda = .11, p=.5){
+  r = -lambda/log(1-p)
+  
+  result<- (1-r/b*log((1-p)/(1-p*exp(1i*u))))^(-a)
+  
+  return(result)
+}
+
+#' The probability distribution of births from a single mother in the branching process.
+#'
+#' @param a The shape parameter of the gamma life time distribution. Default a =10
+#' @param b The rate parameter of the gamma life time distribution. Default b = 1
+#' @param lambda The arrival rate of infectious interactions. Default lambda = .11
+#' @param p The parameter of the logarithmic distribution for the number of infected during an event.
+#' Default p=0.5
+#' 
+#' @return A tibble of counts with probability.
+#'
+#' @export
+prob_distribution<- function(a=10,b=1,lambda=.11, p=.5){
+  sample_size<- 300000L
+  t_lambda<- rgamma(sample_size,a,b)*lambda
+  num_events<- map_int(t_lambda, rpois, n=1)
+  
+  counts<- map(num_events, extraDistr::rlgser, theta =p) %>% map(sum) %>% unlist() %>% table()
+  dist<- tibble(count = as.numeric(names(counts)), prob= as.numeric(counts)/sample_size)
+  dist<- dist %>% filter(prob>10^-5)
+  dist_diff<- diff(dist$count)
+  indx<- which(dist_diff>1)
+  if(length(indx)>0){
+    dist<- dist[1:(indx-1),]
+  }
+  
+  return(dist)
+  
+}
+
+
+
+
+
+# probability_dist<- function(A=10, B=1, Lambda = .05, P=.5){
+#   
+#   resol<- 2^20
+#   
+#   char_fun<- function(u){
+#     char_function(u, A,B,Lambda,P)
+#   }
+#   
+#   out <- fourierin(f = char_fun, lower_int = -10, upper_int = 10,
+#                    lower_eval = 0, upper_eval = 20,
+#                    const_adj = -1, freq_adj = -1,
+#                    resolution = resol)
+#   
+#   vals<- out %>% as_tibble() %>%transmute(x = w,values = Re(values), resolution = resol)
+#   
+#   H<-approxfun(vals$x, vals$values)
+#   probs<- H(seq(0,100,by=1))
+#   idx<- which(probs< 0)[1]
+#   probs<- probs[1:(idx-1)]/sum((probs[1:(idx-1)]), na.rm = T)
+#   
+#   
+#   
+#   
+#   #diff(diff(vals$values)>0)<0
+#   
+#   #y<-vals$values[diff(diff(vals$values)>0)<0]
+#   #y<-y/sum(y)
+#   
+#   return(probs)
+# }
+# 
+
+
+
+
+
 
 
 

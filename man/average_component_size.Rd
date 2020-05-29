@@ -2,7 +2,7 @@
 % Please edit documentation in R/CMJ-functions.R
 \name{average_component_size}
 \alias{average_component_size}
-\title{The saverage component size of paths that go extinct.}
+\title{The average component size of paths that go extinct.}
 \usage{
 average_component_size(u, A = 10, B = 1, Lambda = 0.11, P = 0.5)
 }
@@ -22,5 +22,5 @@ Default p=0.5}
 The average component size.
 }
 \description{
-The saverage component size of paths that go extinct.
+The average component size of paths that go extinct.
 }
