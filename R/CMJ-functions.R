@@ -292,20 +292,25 @@ char_function<- function(u, a=10, b=1, lambda = .11, p=.5){
 prob_distribution <- function(tbar, kappa, lambda, p,
                               n_samp = 3e5L,
                               min_count = 4){
+    # Gamma parameters
     alpha <- tbar * kappa
     beta <- kappa
-    # simulate communicable periods
+    # communicable periods
     t_infect <- rgamma(n_samp, alpha, beta)
-    # infectious events per communicable period
+    # number of infectious events per communicable period
     n_events <- rpois(n_samp, t_infect * lambda)
 
     # Build probability distribution
     dist <-
+        # one row per infectious event
         tibble(idx_parent = rep(seq_len(n_samp), times = n_events),
                n_infect = extraDistr::rlgser(sum(n_events), theta = p)) %>%
+        # count number of infections per parent
         group_by(idx_parent) %>%
         summarize(n_infect = sum(n_infect), .groups = "drop") %>%
+        # count n_infect
         count(n_infect) %>%
+        # empirical probability
         mutate(prob = n / n_samp) %>%
         # Truncate tail I: make sure that at least `min_count` samples
         # are present per bin
