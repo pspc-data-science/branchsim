@@ -289,64 +289,32 @@ char_function<- function(u, a=10, b=1, lambda = .11, p=.5){
 #' @return A tibble of counts with probability.
 #'
 #' @export
-prob_distribution<- function(a=10,b=1,lambda=.11, p=.5){
-  sample_size<- 300000L
-  t_lambda<- rgamma(sample_size,a,b)*lambda
-  num_events<- map_int(t_lambda, rpois, n=1)
-  
-  counts<- map(num_events, extraDistr::rlgser, theta =p) %>% map(sum) %>% unlist() %>% table()
-  dist<- tibble(count = as.numeric(names(counts)), prob= as.numeric(counts)/sample_size)
-  dist<- dist %>% filter(prob>10^-5)
-  dist_diff<- diff(dist$count)
-  indx<- which(dist_diff>1)
-  if(length(indx)>0){
-    dist<- dist[1:(indx-1),]
-  }
-  
-  return(dist)
-  
+prob_distribution <- function(tbar, kappa, lambda, p,
+                              n_samp = 3e5L,
+                              min_count = 4){
+    alpha <- tbar * kappa
+    beta <- kappa
+    # simulate communicable periods
+    t_infect <- rgamma(n_samp, alpha, beta)
+    # infectious events per communicable period
+    n_events <- rpois(n_samp, t_infect * lambda)
+
+    # Build probability distribution
+    dist <-
+        tibble(idx_parent = rep(seq_len(n_samp), times = n_events),
+               n_infect = extraDistr::rlgser(sum(n_events), theta = p)) %>%
+        group_by(idx_parent) %>%
+        summarize(n_infect = sum(n_infect), .groups = "drop") %>%
+        count(n_infect) %>%
+        mutate(prob = n / n_samp) %>%
+        # Truncate tail I: make sure that at least `min_count` samples
+        # are present per bin
+        filter(n >= min_count)
+
+    # Truncate tail II: truncate where gaps start to appear
+    idx <- which(diff(dist[["n_infect"]]) > 1) %>% head(1)
+    if(length(idx) > 0){
+        dist <- dist %>% head(idx - 1)
+    }
+    return(dist)
 }
-
-
-
-
-
-# probability_dist<- function(A=10, B=1, Lambda = .05, P=.5){
-#   
-#   resol<- 2^20
-#   
-#   char_fun<- function(u){
-#     char_function(u, A,B,Lambda,P)
-#   }
-#   
-#   out <- fourierin(f = char_fun, lower_int = -10, upper_int = 10,
-#                    lower_eval = 0, upper_eval = 20,
-#                    const_adj = -1, freq_adj = -1,
-#                    resolution = resol)
-#   
-#   vals<- out %>% as_tibble() %>%transmute(x = w,values = Re(values), resolution = resol)
-#   
-#   H<-approxfun(vals$x, vals$values)
-#   probs<- H(seq(0,100,by=1))
-#   idx<- which(probs< 0)[1]
-#   probs<- probs[1:(idx-1)]/sum((probs[1:(idx-1)]), na.rm = T)
-#   
-#   
-#   
-#   
-#   #diff(diff(vals$values)>0)<0
-#   
-#   #y<-vals$values[diff(diff(vals$values)>0)<0]
-#   #y<-y/sum(y)
-#   
-#   return(probs)
-# }
-# 
-
-
-
-
-
-
-
-
