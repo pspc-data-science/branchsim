@@ -47,7 +47,7 @@ renewal_function<- function(dMu, G=1, Time_limit=100, nstep = 10000){
 #'
 #' @export
 dMu<- function(A=10, B=1, Lambda = .11, P = 0.5){
-
+  
   dmu<- function(t, a=A, b=B, lambda = Lambda, p = P){
     
     r = -lambda/log(1-p)
@@ -86,7 +86,7 @@ G<- function(A=10, B=1){
     result[t==0]<-1
     return(result)
   }
-
+  
 }
 
 #' A function for obtaining the Malthusian parameter of the CMJ process. It also yel
@@ -108,18 +108,18 @@ get_malthusian<- function(a=10,b=1, lambda=.11, p=.5){
   
   find_malthusian<-function(alpha){
     x<- r*p/(1-p)*(1 - (b/(alpha + b))^a) - alpha
-  return(x)
+    return(x)
   }
   
   #alpha<- uniroot(find_malthusian, c(.001,5))$root
   
   alpha<- tryCatch({uniroot(find_malthusian, c(.001,5))$root},
-           error = function(e){
-             0
-           })
+                   error = function(e){
+                     0
+                   })
   
   if(alpha>0){
-  beta<- 1/alpha*(1- a*r*p/(b*(1-p))*(b/(alpha +b))^(a+1) )
+    beta<- 1/alpha*(1- a*r*p/(b*(1-p))*(b/(alpha +b))^(a+1) )
   }else{
     beta<- 0
   }
@@ -188,7 +188,7 @@ get_extinct_prob<- function(a=10, b=1, lambda = .11, p=.5){
 #' @export
 generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
   r = -lambda/log(1-p)
-
+  
   result<- (1-r/b*log((1-p)/(1-p*s)))^(-a)
   
   return(result)
@@ -209,9 +209,9 @@ generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 #' @export
 derivative_generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
   r = -lambda/log(1-p)
-
+  
   result<- a*(1-r/b*log((1-p)/(1-p*s)))^(-a-1)*r/b*p/(1-p*s)
-
+  
   return(result)
 }
 
@@ -229,30 +229,30 @@ derivative_generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 #'
 #' @export
 average_component_size<- function(u, A=10, B=1, Lambda = .11, P=.5){
-
+  
   R = -Lambda/log(1-P)
   Z<- R*P/(1-P)*A/B
-
+  
   if(Z>1){
-  s<- seq(u,1, length.out = 10000)
-  
-  z<- (1-u)/(pracma::trapz(s, generating_function(s, a = A, b = B, lambda = Lambda, p = P)))
-
-  y<- 1 - derivative_generating_function(u, a = A, b = B, lambda = Lambda, p = P)
-
-  result<- 1 + (z*u)/y
-  
+    s<- seq(u,1, length.out = 10000)
+    
+    z<- (1-u)/(pracma::trapz(s, generating_function(s, a = A, b = B, lambda = Lambda, p = P)))
+    
+    y<- 1 - derivative_generating_function(u, a = A, b = B, lambda = Lambda, p = P)
+    
+    result<- 1 + (z*u)/y
+    
   }else{
-  result<- 1/(1-Z)
+    result<- 1/(1-Z)
   }
   
   if(abs(1-Z)<10^-2){
     result<- NA
   }
-
+  
   return(result)
-
-
+  
+  
 }
 
 #' Get the shape and rate parameter of a gamma distribution given an integration interval and mean.
@@ -323,38 +323,38 @@ char_function<- function(u, a=10, b=1, lambda = .11, p=.5){
 #'
 #' @export
 prob_distribution_2 <- function(tbar, kappa, lambda, p,
-                              n_samp = 3e5L,
-                              min_count = 4){
-    # Gamma parameters
-    alpha <- tbar * kappa
-    beta <- kappa
-    # communicable periods
-    t_infect <- rgamma(n_samp, alpha, beta)
-    # number of infectious events per communicable period
-    n_events <- rpois(n_samp, t_infect * lambda)
-
-    # Build probability distribution
-    dist <-
-        # one row per infectious event
-        tibble(idx_parent = rep(seq_len(n_samp), times = n_events),
-               n_infect = extraDistr::rlgser(sum(n_events), theta = p)) %>%
-        # count number of infections per parent
-        group_by(idx_parent) %>%
-        summarize(n_infect = sum(n_infect), .groups = "drop") %>%
-        # count n_infect
-        count(n_infect) %>%
-        # empirical probability
-        mutate(prob = n / n_samp) %>%
-        # Truncate tail I: make sure that at least `min_count` samples
-        # are present per bin
-        filter(n >= min_count)
-
-    # Truncate tail II: truncate where gaps start to appear
-    idx <- which(diff(dist[["n_infect"]]) > 1) %>% head(1)
-    if(length(idx) > 0){
-        dist <- dist %>% head(idx - 1)
-    }
-    return(dist)
+                                n_samp = 3e5L,
+                                min_count = 4){
+  # Gamma parameters
+  alpha <- tbar * kappa
+  beta <- kappa
+  # communicable periods
+  t_infect <- rgamma(n_samp, alpha, beta)
+  # number of infectious events per communicable period
+  n_events <- rpois(n_samp, t_infect * lambda)
+  
+  # Build probability distribution
+  dist <-
+    # one row per infectious event
+    tibble(idx_parent = rep(seq_len(n_samp), times = n_events),
+           n_infect = extraDistr::rlgser(sum(n_events), theta = p)) %>%
+    # count number of infections per parent
+    group_by(idx_parent) %>%
+    summarize(n_infect = sum(n_infect), .groups = "drop") %>%
+    # count n_infect
+    count(n_infect) %>%
+    # empirical probability
+    mutate(prob = n / n_samp) %>%
+    # Truncate tail I: make sure that at least `min_count` samples
+    # are present per bin
+    filter(n >= min_count)
+  
+  # Truncate tail II: truncate where gaps start to appear
+  idx <- which(diff(dist[["n_infect"]]) > 1) %>% head(1)
+  if(length(idx) > 0){
+    dist <- dist %>% head(idx - 1)
+  }
+  return(dist)
 }
 
 #' The probability distribution of births from a single mother in the branching process.
