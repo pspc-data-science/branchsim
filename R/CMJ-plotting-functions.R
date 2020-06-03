@@ -1,3 +1,19 @@
+#' Plot the solution to the renewal equation solution for expecations of the Crump-Mode-Jagers (CMJ) over a random characteristic.
+#'
+#' This function plots the numerical soution to the renewal equation for a CMJ process using the properties of the triple
+#' (lambda_chi, xi_chi, chi). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
+#' Z = G(t) + int_0^t Z(t - u) mu(du)
+#'  
+#' @param Lambda The function dMu(t) that defines mu(dt) = dMu(t) dt. Function as argument.
+#' @param mu A function that that defines the expectation of the random characteristic of interest. Set to G=1 
+#' by default (total number born). Function as argument.
+#' @param A The maximum of the time interval for integration 0,T.
+#' @param B The number of steps for the integration. 
+#' @param Time The number of steps for the integration. 
+#' @param type The number of steps for the integration. 
+#' 
+#' @return A tibble containing the time steps with the solution to the renewal equation.
+#'
 #' @export
 renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = "Total"){
   

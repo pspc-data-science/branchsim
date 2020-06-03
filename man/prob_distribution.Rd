@@ -4,17 +4,17 @@
 \alias{prob_distribution}
 \title{The probability distribution of births from a single mother in the branching process.}
 \usage{
-prob_distribution(a = 10, b = 1, lambda = 0.11, p = 0.5)
+prob_distribution(tbar, kappa, lambda, p, n_samp = 300000L, min_count = 4)
 }
 \arguments{
-\item{a}{The shape parameter of the gamma life time distribution. Default a =10}
-
-\item{b}{The rate parameter of the gamma life time distribution. Default b = 1}
-
 \item{lambda}{The arrival rate of infectious interactions. Default lambda = .11}
 
 \item{p}{The parameter of the logarithmic distribution for the number of infected during an event.
 Default p=0.5}
+
+\item{a}{The shape parameter of the gamma life time distribution. Default a =10}
+
+\item{b}{The rate parameter of the gamma life time distribution. Default b = 1}
 }
 \value{
 A tibble of counts with probability.

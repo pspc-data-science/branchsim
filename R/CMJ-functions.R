@@ -322,7 +322,7 @@ char_function<- function(u, a=10, b=1, lambda = .11, p=.5){
 #' @return A tibble of counts with probability.
 #'
 #' @export
-prob_distribution <- function(tbar, kappa, lambda, p,
+prob_distribution_2 <- function(tbar, kappa, lambda, p,
                               n_samp = 3e5L,
                               min_count = 4){
     # Gamma parameters
@@ -356,3 +356,33 @@ prob_distribution <- function(tbar, kappa, lambda, p,
     }
     return(dist)
 }
+
+#' The probability distribution of births from a single mother in the branching process.
+#'
+#' @param a The shape parameter of the gamma life time distribution. Default a =10
+#' @param b The rate parameter of the gamma life time distribution. Default b = 1
+#' @param lambda The arrival rate of infectious interactions. Default lambda = .11
+#' @param p The parameter of the logarithmic distribution for the number of infected during an event.
+#' Default p=0.5
+#' 
+#' @return A tibble of counts with probability.
+#'
+#' @export
+prob_distribution<- function(a=10,b=1,lambda=.11, p=.5){
+  sample_size<- 300000L
+  t_lambda<- rgamma(sample_size,a,b)*lambda
+  num_events<- map_int(t_lambda, rpois, n=1)
+  
+  counts<- map(num_events, extraDistr::rlgser, theta =p) %>% map(sum) %>% unlist() %>% table()
+  dist<- tibble(count = as.numeric(names(counts)), prob= as.numeric(counts)/sample_size)
+  dist<- dist %>% filter(prob>10^-5)
+  dist_diff<- diff(dist$count)
+  indx<- which(dist_diff>1)
+  if(length(indx)>0){
+    dist<- dist[1:(indx-1),]
+  }
+  
+  return(dist)
+  
+}
+
