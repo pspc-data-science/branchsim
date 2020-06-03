@@ -13,9 +13,9 @@
 #' @return A tibble containing the time steps with the solution to the renewal equation.
 #'
 #' @export
-renewal_function<- function(dMu, G=1, T=100, nstep = 10000){
+renewal_function<- function(dMu, G=1, Time_limit=100, nstep = 10000){
   
-  times<- seq(0,T, length.out = nstep)
+  times<- seq(0,Time_limit, length.out = nstep)
   
   g_dt<- dMu(times)*(times[2]- times[1])
   
@@ -111,11 +111,38 @@ get_malthusian<- function(a=10,b=1, lambda=.11, p=.5){
   return(x)
   }
   
-  alpha<- uniroot(find_malthusian, c(.001,5))$root
+  #alpha<- uniroot(find_malthusian, c(.001,5))$root
   
+  alpha<- tryCatch({uniroot(find_malthusian, c(.001,5))$root},
+           error = function(e){
+             0
+           })
+  
+  if(alpha>0){
   beta<- 1/alpha*(1- a*r*p/(b*(1-p))*(b/(alpha +b))^(a+1) )
+  }else{
+    beta<- 0
+  }
   
   return(c(alpha,beta))
+  
+}
+
+#' A function for obtaining the p parameter of the log-series distribution from its mean, mu. 
+#'
+#' @param mu The mean of a log-series distribution.
+#' 
+#' @return The p value of the log-series distribution
+#' 
+#' #' @export
+find_p<- function(mu){
+  
+  root_fun<- function(p){
+    y<- mu + p/(log(1-p)*(1-p)) 
+  }
+  
+  result<- uniroot(root_fun, c(.001,.999))$root
+  return(result)
   
 }
 
@@ -204,17 +231,23 @@ derivative_generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 average_component_size<- function(u, A=10, B=1, Lambda = .11, P=.5){
 
   R = -Lambda/log(1-P)
-  Z<- R*P/(1-P)*A
+  Z<- R*P/(1-P)*A/B
 
-  if(Z>=1){
-  s<- seq(u,1, length.out = 1000)
+  if(Z>1){
+  s<- seq(u,1, length.out = 10000)
   
   z<- (1-u)/(pracma::trapz(s, generating_function(s, a = A, b = B, lambda = Lambda, p = P)))
 
   y<- 1 - derivative_generating_function(u, a = A, b = B, lambda = Lambda, p = P)
 
-  result<- 1 + (z*u)/y}else{
+  result<- 1 + (z*u)/y
+  
+  }else{
   result<- 1/(1-Z)
+  }
+  
+  if(abs(1-Z)<10^-2){
+    result<- NA
   }
 
   return(result)
