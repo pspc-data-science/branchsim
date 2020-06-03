@@ -160,9 +160,9 @@ component_size_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
 }
 
 #' @export
-plot_single_dist<- function(a=5.5,b=.85,lambda=.11, p=.5){
+plot_single_mother_dist<- function(a=5.5,b=.85,lambda=.11, p=.5){
   
-  X<- prob_distribution(a=a,b=b,lambda=lambda, p=p) %>% filter(prob>3*10^-4)
+  X<- single_mother_distribution(a=a,b=b,lambda=lambda, p=p) %>% filter(prob>3*10^-4)
   
   
   ggplot(X, aes(count, prob)) + geom_segment(aes(x= count, xend = count, y = 0, yend=prob), size =1.5) + 

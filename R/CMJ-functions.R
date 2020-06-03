@@ -368,7 +368,7 @@ prob_distribution_2 <- function(tbar, kappa, lambda, p,
 #' @return A tibble of counts with probability.
 #'
 #' @export
-prob_distribution<- function(a=10,b=1,lambda=.11, p=.5){
+single_mother_distribution<- function(a=10,b=1,lambda=.11, p=.5){
   sample_size<- 300000L
   t_lambda<- rgamma(sample_size,a,b)*lambda
   num_events<- map_int(t_lambda, rpois, n=1)

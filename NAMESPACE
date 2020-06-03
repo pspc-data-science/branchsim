@@ -16,15 +16,12 @@ export(get_extinct_prob)
 export(get_malthusian)
 export(plot_gamma_dist)
 export(plot_paths)
-export(plot_single_dist)
-<<<<<<< HEAD
-export(prob_distribution)
-=======
-export(prob_ninfect)
->>>>>>> 56a8e3c3d15f93fe0dbe545dc10901eb6edd98e8
+export(plot_single_mother_dist)
+export(prob_distribution_2)
 export(renewal_function)
 export(renewal_plot)
 export(run_sims)
+export(single_mother_distribution)
 export(treelist_to_paths)
 import(dplyr)
 import(ggplot2)
