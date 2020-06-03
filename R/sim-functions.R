@@ -235,31 +235,3 @@ run_sims <- function(nsim = 10,
     sim_data <- bind_cols(args, tibble(treelist))
     return(sim_data)
 }
-
-
-#' Simulate the distribution of individuals infected per patient
-#'
-#' @param tbar Average duration of the communicable window.
-#' @param kappa Rate parameter of the Gamma distribution.
-#' @param lambda Poisson rate
-#' @param p Logarithmic distribution parameter
-#' @param n Number of points to simulate
-#'
-#' @return A vector of integers of length \code{n}, giving the number of
-#'     individuals infected by each infectious individual
-sim_ninfections <- function(tbar, kappa, lambda, p, n = 100000) {
-    alpha <- kappa * tbar
-    beta <- kappa
-    t_infect <- rgamma(n, alpha, beta)
-    n_events <- rpois(n, lambda * t_infect)
-    id_parent <- rep(seq_len(n), times = n_events)
-    # Using dplyr functions is about 10x faster than using base "by"
-    n_infect <-
-        tibble(id = id_parent,
-               x = extraDistr::rlgser(sum(n_events), p) %>% as.integer) %>%
-        group_by(id) %>%
-        summarize(x = sum(x)) %>%
-        pull(x)
-    n_infect_padded <- c(n_infect, rep(0L, n - length(n_infect))) %>% sample
-    return(n_infect_padded)
-}

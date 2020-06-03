@@ -322,9 +322,9 @@ char_function<- function(u, a=10, b=1, lambda = .11, p=.5){
 #' @return A tibble of counts with probability.
 #'
 #' @export
-prob_distribution <- function(tbar, kappa, lambda, p,
-                              n_samp = 3e5L,
-                              min_count = 4){
+prob_ninfect <- function(tbar, kappa, lambda, p,
+                         n_samp = 3e5L,
+                         min_count = 4){
     # Gamma parameters
     alpha <- tbar * kappa
     beta <- kappa
