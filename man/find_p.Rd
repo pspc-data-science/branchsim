@@ -11,8 +11,6 @@ find_p(mu)
 }
 \value{
 The p value of the log-series distribution
-
-#' @export
 }
 \description{
 A function for obtaining the p parameter of the log-series distribution from its mean, mu.

@@ -1,18 +1,17 @@
-#' Plot the solution to the renewal equation solution for expecations of the Crump-Mode-Jagers (CMJ) over a random characteristic.
+#' Plot the solution to the renewal equation solution for expectations of the Crump-Mode-Jagers (CMJ) over a random characteristic.
 #'
 #' This function plots the numerical soution to the renewal equation for a CMJ process using the properties of the triple
 #' (lambda_chi, xi_chi, chi). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
 #' Z = G(t) + int_0^t Z(t - u) mu(du)
 #'  
-#' @param Lambda The function dMu(t) that defines mu(dt) = dMu(t) dt. Function as argument.
-#' @param mu A function that that defines the expectation of the random characteristic of interest. Set to G=1 
-#' by default (total number born). Function as argument.
-#' @param A The maximum of the time interval for integration 0,T.
-#' @param B The number of steps for the integration. 
-#' @param Time The number of steps for the integration. 
-#' @param type The number of steps for the integration. 
+#' @param Lambda The arrival rate of infectious interactions.
+#' @param mu The average number infected per infectious interaction
+#' @param A The shape parameter of the communicable preiod gamma function.
+#' @param B The rate parameter of the communicable preiod gamma function.
+#' @param Time The end of the time interval of interest \code{[0,T]}.
+#' @param type The type or random characteristic Total for total infected Infectious for currently infected
 #' 
-#' @return A tibble containing the time steps with the solution to the renewal equation.
+#' @return A plot showing the solution of the renewal equation with the malthusian parameter.
 #'
 #' @export
 renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = "Total"){
@@ -56,12 +55,8 @@ renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = 
 #' @export
 asymptotic_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
   
-  get_p<- Vectorize(find_p)
-  p<- get_p(mu)
-  
   mu<- seq(mu_limits[1],mu_limits[2], length.out = 40)
   lambda<- seq(lambda_limits[1],lambda_limits[2], length.out = 40)
-  
   
   get_p<- Vectorize(find_p)
   p<- get_p(mu)

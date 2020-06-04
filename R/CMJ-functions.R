@@ -134,7 +134,7 @@ get_malthusian<- function(a=10,b=1, lambda=.11, p=.5){
 #' 
 #' @return The p value of the log-series distribution
 #' 
-#' #' @export
+#' @export
 find_p<- function(mu){
   
   root_fun<- function(p){

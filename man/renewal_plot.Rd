@@ -2,7 +2,7 @@
 % Please edit documentation in R/CMJ-plotting-functions.R
 \name{renewal_plot}
 \alias{renewal_plot}
-\title{Plot the solution to the renewal equation solution for expecations of the Crump-Mode-Jagers (CMJ) over a random characteristic.}
+\title{Plot the solution to the renewal equation solution for expectations of the Crump-Mode-Jagers (CMJ) over a random characteristic.}
 \usage{
 renewal_plot(
   Lambda = 0.11,
@@ -14,21 +14,20 @@ renewal_plot(
 )
 }
 \arguments{
-\item{Lambda}{The function dMu(t) that defines mu(dt) = dMu(t) dt. Function as argument.}
+\item{Lambda}{The arrival rate of infectious interactions.}
 
-\item{mu}{A function that that defines the expectation of the random characteristic of interest. Set to G=1
-by default (total number born). Function as argument.}
+\item{mu}{The average number infected per infectious interaction}
 
-\item{A}{The maximum of the time interval for integration 0,T.}
+\item{A}{The shape parameter of the communicable preiod gamma function.}
 
-\item{B}{The number of steps for the integration.}
+\item{B}{The rate parameter of the communicable preiod gamma function.}
 
-\item{Time}{The number of steps for the integration.}
+\item{Time}{The end of the time interval of interest \code{[0,T]}.}
 
-\item{type}{The number of steps for the integration.}
+\item{type}{The type or random characteristic Total for total infected Infectious for currently infected}
 }
 \value{
-A tibble containing the time steps with the solution to the renewal equation.
+A plot showing the solution of the renewal equation with the malthusian parameter.
 }
 \description{
 This function plots the numerical soution to the renewal equation for a CMJ process using the properties of the triple
