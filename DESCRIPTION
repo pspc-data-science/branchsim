@@ -23,4 +23,5 @@ Imports:
     tidyr,
     extraDistr,
     egg,
-    pracma
+    pracma,
+    scales

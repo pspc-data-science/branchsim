@@ -52,6 +52,19 @@ renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = 
   
 }
 
+
+
+#' A gradient plot of the malthusian parameter as a function of the average number of infectious events per day
+#' and average number infected per infectious event. The malthusian parameter is the exponential parameter in the 
+#' asymptotic limit. 
+#'  
+#' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
+#' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
+#' @param a The shape parameter of the communicable preiod gamma function.
+#' @param b The rate parameter of the communicable preiod gamma function.
+#' 
+#' @return A plot showing a gradient of the malthusian parameter.
+#'
 #' @export
 asymptotic_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
   
@@ -82,6 +95,17 @@ asymptotic_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
     scale_y_continuous(expand=c(0,0), breaks = pretty_breaks(10))
 }
 
+
+#' A gradient plot of the extincition probability as a function of the average number of infectious events per day
+#' and average number infected per infectious event.
+#'  
+#' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
+#' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
+#' @param a The shape parameter of the communicable preiod gamma function.
+#' @param b The rate parameter of the communicable preiod gamma function.
+#' 
+#' @return A plot showing a gradient of the extinction probability.
+#'
 #' @export
 extinct_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
   
@@ -114,6 +138,17 @@ extinct_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
     guides(fill = guide_colourbar(barwidth = 0.5, barheight = 20))
 }
 
+#' A gradient plot of the average compenent size if extinction occurs as a function of the average number of infectious events per day
+#' and average number infected per infectious event. The malthusian parameter is the exponential parameter in the 
+#' asymptotic limit. 
+#'  
+#' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
+#' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
+#' @param a The shape parameter of the communicable preiod gamma function.
+#' @param b The rate parameter of the communicable preiod gamma function.
+#' 
+#' @return A plot showing a gradient of the average component size if extinction occurs.
+#'
 #' @export
 component_size_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
   
@@ -154,8 +189,21 @@ component_size_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
   
 }
 
+#' The plot of a single mother's distribution function for her infected population.
+#'  
+#' @param a The shape parameter of the communicable preiod gamma function.
+#' @param b The rate parameter of the communicable preiod gamma function.
+#' @param lambda The arrival rate of infectious interactions.
+#' @param mu The average number infected per infectious interaction
+#' 
+#' @return A plot showing a the distribution function of a single mother's infected population
+#'
 #' @export
-plot_single_mother_dist<- function(a=5.5,b=.85,lambda=.11, p=.5){
+plot_single_mother_dist<- function(a=5.5,b=.85,lambda=.11, mu = 1.5){
+  
+  get_p<- Vectorize(find_p)
+  p<- find_p(mu)
+  
   
   X<- single_mother_distribution(a=a,b=b,lambda=lambda, p=p) %>% filter(prob>3*10^-4)
   
@@ -168,6 +216,13 @@ plot_single_mother_dist<- function(a=5.5,b=.85,lambda=.11, p=.5){
   
 }
 
+#' The plot of communicable window's distribution.
+#'  
+#' @param a The shape parameter of the communicable preiod gamma function.
+#' @param b The rate parameter of the communicable preiod gamma function.
+#' 
+#' @return A plot showing a the distribution function of the communicable period.
+#'
 #' @export
 plot_gamma_dist<- function(a=5.5, b= .85){
 
