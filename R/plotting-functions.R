@@ -21,7 +21,10 @@ plot_paths <- function(paths_data,
                        y_var = n_infected,
                        n_max = 200,
                        show_hist = TRUE,
-                       show_extinct = TRUE) {
+                       show_extinct = TRUE,
+                       show_smooth = TRUE,
+                       extinct_color = "red",
+                       n_bins = 100) {
     # Sample down to n_max paths if required
     if (length(unique(paths_data[["id_sim"]])) > n_max) {
         paths_plt <-
@@ -51,7 +54,7 @@ plot_paths <- function(paths_data,
         paths_plt %>%
         pull(!!y_var) %>%
         min
-    bin_width <- (log(max_y, 10) - log(min_y, 10)) / 100
+    bin_width <- (log(max_y, 10) - log(min_y, 10)) / n_bins
     max_y <- 10^(log(max_y, 10) + bin_width)
     min_y <- 10^(log(min_y, 10) - bin_width)
     # Plot paths
@@ -65,8 +68,18 @@ plot_paths <- function(paths_data,
         scale_x_continuous(expand = expansion(c(0, 0))) +
         scale_y_log10(limits = c(min_y, max_y),
                       expand = expansion(c(0, .05))) +
-        scale_color_manual(values = c("TRUE" = "red",
-                                         "FALSE" = "black"))
+        scale_color_manual(values = c("TRUE" = extinct_color,
+                                      "FALSE" = "black"))
+    if (show_smooth) {
+        plt1 <-
+            plt1 +
+            geom_smooth(mapping = aes(time, !!y_var),
+                        data = paths_plt %>% filter(time < max(time)),
+                        inherit.aes = FALSE,
+                        se = FALSE, color = "salmon",
+                        size = 2,
+                        alpha = .5)
+    }
     # Show distribution of paths position at the end
     if (show_hist) {
         # Adjust margins so the plots are joined perfectly.
@@ -79,9 +92,9 @@ plot_paths <- function(paths_data,
             ggplot(aes(!!y_var, ..density..)) +
             geom_histogram(aes(fill = is_extinct),
                            binwidth = bin_width,
-                           alpha = .5,
+                           ## alpha = .5,
                            show.legend = show_extinct) +
-            scale_fill_manual(values = c("TRUE" = "red",
+            scale_fill_manual(values = c("TRUE" = extinct_color,
                                          "FALSE" = "black")) +
             scale_x_log10(limits = c(min_y, max_y),
                           expand = expansion(c(0, .05))) +
