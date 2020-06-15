@@ -95,6 +95,15 @@ get_extinction_data <- function(treelist, tmax = Inf, ceil = Inf) {
 }
 
 
+
+#' Convert a tree to a \code{tidygraph} object.
+#'
+#' @param tree A list of tibbles, each corresponding to a generation
+#'     in the infection propagation
+#'
+#' @return a \code{tidygraph} object
+#'
+#' @export
 as_tidygraph <- function(tree) {
     # If tree is passed as a list, this will convert it to a tibble
     tree <- tree %>% bind_rows
@@ -105,4 +114,5 @@ as_tidygraph <- function(tree) {
         select(from = id_parent, to = id) %>%
         tail(-1)
     graph <- tidygraph::tbl_graph(nodes = nodes, edges = edges)
+    return(graph)
 }
