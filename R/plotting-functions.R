@@ -164,7 +164,7 @@ plot_paths <- function(paths_data,
     }
 }
 
-
+#' @export
 plot_single_path <- function(path_data,
                              tlim = NA,
                              ylim = NA,
