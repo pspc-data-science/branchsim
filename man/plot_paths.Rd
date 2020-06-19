@@ -8,8 +8,13 @@ plot_paths(
   paths_data,
   y_var = n_infected,
   n_max = 200,
+  tlim = NA,
+  highlight_path_id = NA,
   show_hist = TRUE,
-  show_extinct = TRUE
+  show_extinct = TRUE,
+  smooth_data = NULL,
+  extinct_color = "red",
+  n_bins = 100
 )
 }
 \arguments{
@@ -22,14 +27,21 @@ plot_paths(
 \item{n_max}{An integer. Maximum number of paths to display. Useful
 to avoid graphs that are too crowded.}
 
+\item{tlim}{A scalar.}
+
 \item{show_hist}{A logical scalar. If \code{TRUE}, show the
 distribution of paths at the end.}
 
-\item{show_1_mass}{A logical scalar. Show the probability mass at
-\code{y_var = 1}. When \code{y_var} is \code{n_infected}, this
-corresponds to epidemics that did not continue past the first
-infected individual. NOTE: this parameter is meaningful only
-when \code{show_hist} is \code{TRUE}.}
+\item{show_extinct}{A logical scalar. Show extinct paths along with
+non-extinct ones.}
+
+\item{smooth_data}{A \code{data.frame}, with at least the columns
+\code{time}, \code{n_infected}, and \code{n_infectious}.}
+
+\item{extinct_color}{A color value understood by ggplot.}
+
+\item{n_bins}{An integer scalar. Number of bins in the histogram
+panel.}
 }
 \value{
 A plot.

@@ -24,4 +24,6 @@ Imports:
     extraDistr,
     egg,
     pracma,
-    scales
+    scales,
+    ggraph,
+    tidygraph
