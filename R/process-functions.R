@@ -62,6 +62,7 @@ treelist_to_paths <- function(treelist,
 #' @return A \code{tbl} with the same format as \code{df_paths}, but
 #'     with the last point for each path fixed at \code{tmax}.
 #'
+#' @export
 equalize_paths <- function(df_paths, tmax) {
     # Truncate points beyond tmax
     df_paths <- df_paths %>% filter(time <= tmax)
