@@ -2,8 +2,7 @@ library(tidyverse)
 library(tidygraph)
 library(ggraph)
 ## ggraph::set_graph_style(plot_margin = margin(1,1,1,1))
-
-devtools::load_all()
+## devtools::load_all()
 
 set.seed(123)
 sims <-
@@ -16,7 +15,16 @@ sims <-
                               tmax), branchsim::calc_avg_path))
 
 
-plot_single_path(sims[["paths"]][[1]] %>% filter(id_sim == 2) %>% branchsim::equalize_paths(10), smooth_data = sims[["smooth"]][[1]] %>% filter(time <= 10), ylim = max(sims[["paths"]][[1]][["n_infected"]]), tlim = 25)
+branchsim::plot_single_path(sims[["paths"]][[1]] %>%
+                            filter(id_sim == 2) %>%
+                            branchsim::equalize_paths(10),
+                            ###
+                            smooth_data = sims[["smooth"]][[1]] %>%
+                                filter(time <= 10),
+                            ###
+                            ylim = max(sims[["paths"]][[1]][["n_infected"]]),
+                            ###
+                            tlim = 25)
 
 
 ## # Plot with energy minimization algo

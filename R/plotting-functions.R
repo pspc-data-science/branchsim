@@ -218,3 +218,115 @@ plot_dendrogram <- function(single_path_data, tmax = NA) {
         coord_flip(ylim = c(0, tmax))
 
 }
+
+
+
+#' Calculate R0 implied from the model
+#'
+#' @param tbar Average duration of the communicable window.
+#' @param lambda Poisson rate
+#' @param p Logarithmic distribution parameter
+#' @param q Probability of interruption
+#' @param mbar Average communicable period elapsed at the time of interuption
+#'
+#' @return The value of \eqn{R_0}.
+calc_R0 <- function(tbar, lambda, mu, q = 0, mbar = NA) {
+    if (q == 0) {
+        a <- 1
+    } else {
+        a <- q * (mbar / tbar + 1)
+    }
+    return(a * mu * lambda * tbar)
+}
+
+
+#' Contour plot of \eqn{R_0} for different values of \eqn{\lambda} and \eqn{\mu}.
+#'
+#' @param lambda A vector of two values covering the range of \eqn{lambda}.
+#' @param mu A vector of two values covering the range of \eqn{mu}.
+#'
+#' @return A ggplot object
+#'
+#' @export
+plot_R0 <- function(my_lambda, my_mu, tbar,
+                    lambda_lim = c(.01, 0.2),
+                    mu_lim = c(1.01, 2.),
+                    q = 0, mbar = NA, n = 32) {
+    my_R0 <- calc_R0(tbar, my_lambda, my_mu, q, mbar)
+    lambda_vec <- seq(lambda_lim[1], lambda_lim[2], length.out = n)
+    mu_vec <- seq(mu_lim[1], mu_lim[2], length.out = n)
+    dat_2d <-
+        expand_grid(lambda = lambda_vec, mu = mu_vec) %>%
+        mutate(R0 = calc_R0(tbar, lambda, mu, q, mbar))
+    # Find (lambda, mu) coordinates corresponding to contour R0 == 1
+    # For each lambda, find mu for which R0 == 1
+    one_contour_lambda <-
+        dat_2d %>%
+        group_by(lambda) %>%
+        group_nest %>%
+        filter(map_lgl(data, ~ min(.[["R0"]]) < 1 & max(.[["R0"]]) > 1)) %>%
+        mutate(mu = map_dbl(data, ~ approx(.[["R0"]],
+                                           .[["mu"]], 1)[["y"]])) %>%
+        # cleanup
+        select(-data)
+    # For each mu, find lambda for which R0 == 1
+    one_contour_mu <-
+        dat_2d %>%
+        group_by(mu) %>%
+        group_nest %>%
+        filter(map_lgl(data, ~ min(.[["R0"]]) < 1 & max(.[["R0"]]) > 1)) %>%
+        mutate(lambda = map_dbl(data, ~ approx(.[["R0"]],
+                                               .[["lambda"]], 1)[["y"]])) %>%
+        # cleanup
+        select(-data)
+    # Join the two tibbles
+    one_contour <-
+        bind_rows(one_contour_lambda, one_contour_mu) %>%
+        arrange(lambda) %>%
+        unique
+    # Label position for R0 value
+    label_pos <- one_contour %>% filter(mu == quantile(mu, .5, type = 1))
+    label_nudge_y <- 0.05 * abs(mu_lim[2] - mu_lim[1])
+    ggplot(dat_2d, aes(lambda, mu, fill = R0)) +
+        ## geom_contour_filled() +
+        geom_raster(interpolate = TRUE) +
+        geom_line(aes(lambda, mu),
+                  data = one_contour,
+                  inherit.aes = FALSE,
+                  color = "black",
+                  linetype = 3,
+                  size = 2) +
+        ## annotate("text",
+        ##          x = label_pos[["lambda"]],
+        ##          y = label_pos[["mu"]],
+        ##          label = bquote(R[0] == 1),
+        ##          color = "white",
+        ##          vjust = 0,
+        ##          hjust = 0,
+        ##          size = 10) +
+        annotate("point",
+                 x = my_lambda,
+                 y = my_mu,
+                 size = 8,
+                 color = "black",
+                 shape = 8) +
+        annotate("text",
+                 y = ifelse(my_R0 <= 1,
+                            my_mu - label_nudge_y,
+                            my_mu + label_nudge_y),
+                 x = my_lambda,
+                 hjust = 0.5,
+                 vjust = ifelse(my_R0 <= 1, 1, 0),
+                 label = bquote(R[0] == .(my_R0)),
+                 color = "black",
+                 size = 10) +
+        theme_bw() +
+        scale_fill_gradient2(low = muted("blue"),
+                             high = muted("red"),
+                             midpoint = 1) +
+        # For math notation and bquote, see
+        # https://trinkerrstuff.wordpress.com/2018/03/15/2246/
+        labs(x = "Average number of infectious events per day",
+             y = "Average number infected per infectious event",
+             fill = bquote(R[0]))
+}
