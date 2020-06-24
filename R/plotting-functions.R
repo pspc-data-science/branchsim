@@ -1,41 +1,3 @@
-#' Compute average epidemic path
-#'
-#' @export
-calc_avg_path <- function(lambda = .11,
-                          mu = 1.5,
-                          A = 5.5,
-                          B = 0.85,
-                          tmax = 100,
-                          nstep = 10000) {
-    
-    get_p <- Vectorize(find_p)
-    p <- get_p(mu)
-
-    dmu_fun <- dMu(A=A, B=B, Lambda = lambda, P = p)
-
-    # Calculate the theoretical number of infected / infectious
-    # individuals vs time
-    eval_tibble <- left_join(renewal_function(dmu_fun,
-                                              # n_infected
-                                              G = 1,
-                                              Time_limit = tmax,
-                                              nstep = nstep) %>%
-                             rename(n_infected = solution),
-                             #####
-                             renewal_function(dmu_fun,
-                                              # n_infectious
-                                              G = G(A = A, B = B),
-                                              Time_limit = tmax,
-                                              nstep = nstep) %>%
-                             rename(n_infectious = solution),
-                             #####
-                             by = "time")
-
-    return(eval_tibble)
-}
-
-
-
 #' Plot epidemic paths
 #'
 #' @param paths_data A \code{data.frame}, with at least the columns
@@ -220,26 +182,6 @@ plot_dendrogram <- function(single_path_data, tmax = NA) {
 }
 
 
-
-#' Calculate R0 implied from the model
-#'
-#' @param tbar Average duration of the communicable window.
-#' @param lambda Poisson rate
-#' @param p Logarithmic distribution parameter
-#' @param q Probability of interruption
-#' @param mbar Average communicable period elapsed at the time of interuption
-#'
-#' @return The value of \eqn{R_0}.
-calc_R0 <- function(tbar, lambda, mu, q = 0, mbar = NA) {
-    if (q == 0) {
-        a <- 1
-    } else {
-        a <- q * (mbar / tbar + 1)
-    }
-    return(a * mu * lambda * tbar)
-}
-
-
 #' Contour plot of \eqn{R_0} for different values of \eqn{\lambda} and \eqn{\mu}.
 #'
 #' @param lambda A vector of two values covering the range of \eqn{lambda}.
@@ -329,4 +271,96 @@ plot_R0 <- function(my_lambda, my_mu, tbar,
         labs(x = "Average number of infectious events per day",
              y = "Average number infected per infectious event",
              fill = bquote(R[0]))
+}
+
+
+#' Plot the Gamma density for the communicable window
+#'
+#' @param tbar Average duration of the communicable window.
+#' @param kappa Rate parameter of the Gamma distribution.
+#' @param pmax A scalar between 0 and 1. Upper limit for the time axis.
+#' @param n Number of points to plot.
+#'
+#' @return A ggplot object
+#'
+#' @export
+plot_gamma <- function(tbar, kappa, pmax = 0.999, n = 1000) {
+    # shape
+    alpha <- tbar * kappa
+    beta <- kappa
+    xmax <- qgamma(pmax, alpha, beta)
+    dat <- tibble(time = seq(from = 0, to = xmax, length.out = 1000),
+                  f = dgamma(time, alpha, beta))
+    ggplot(dat, aes(time, f)) +
+        geom_line() +
+        theme_bw() +
+        geom_vline(xintercept = tbar, linetype = 2) +
+        annotate("text",
+                 x = tbar * 1.02,
+                 y = dgamma(tbar, alpha, beta) * 1.02,
+                 hjust = 0,
+                 vjust = 1,
+                 label = str_c("mean: ", tbar)) +
+        labs(x = "time",
+             y = "probability")
+}
+
+
+#' Plot the time between infectious events
+#'
+#' @param lambda Poisson rate
+#' @param pmax A scalar between 0 and 1. Upper limit for the time axis.
+#' @param n Number of points to plot.
+#'
+#' @return A ggplot object
+#'
+#' @export
+plot_exp <- function(lambda, pmax = 0.995, n = 1000) {
+    xmax <- qexp(pmax, lambda)
+    xavg <- 1 / lambda
+    dat <- tibble(time = seq(from = 0, to = xmax, length.out = n),
+                  f = dexp(time, lambda))
+    ggplot(dat, aes(time, f)) +
+        geom_line() +
+        theme_bw() +
+        geom_vline(xintercept = 1 / lambda,
+                   linetype = 2) +
+        annotate("text",
+                 x = xavg,
+                 y = mean(c(dexp(0, lambda), dexp(xavg, lambda))),
+                 hjust = 0,
+                 label = str_c("mean time between events: ",
+                               format(xavg, digits = 2))) +
+        labs(x = "time between infectious events",
+             y = "probability")
+}
+
+
+#' Plot the number of individuals infected per infectious event
+#'
+#' @param mu Average number of individuals infected
+#'
+#' @return A ggplot object
+#'
+#' @export
+plot_log <- function(p, q_high = 0.995) {
+    mu <- -p / ((1 - p) * log(1 - p))
+    x_high <- extraDistr::qlgser(q_high, p)
+    dat <- tibble(n = seq(1, x_high, by = 1),
+                  f = extraDistr::dlgser(n, p))
+    ggplot(dat, aes(n, f)) +
+        geom_segment(aes(x = n, xend = n,
+                         y = 0, yend = f)) +
+        geom_point(aes(x = n, y = f)) +
+        geom_vline(xintercept = mu,
+                   linetype = 2) +
+        annotate("text",
+                 x = mu * 1.02,
+                 y = extraDistr::dlgser(floor(mu), p),
+                 hjust = 0,
+                 label = str_c("mean : ", format(mu, digits = 2))) +
+        theme_bw() +
+        scale_x_continuous(breaks = seq(1, x_high, by = 1)) +
+        labs(x = "infections per event",
+             y = "probability")
 }
