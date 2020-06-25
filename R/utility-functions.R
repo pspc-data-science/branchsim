@@ -7,6 +7,7 @@
 #' @param mbar Average communicable period elapsed at the time of interuption
 #'
 #' @return The value of \eqn{R_0}.
+#' @export
 calc_R0 <- function(tbar, lambda, mu, q = 0, mbar = NA) {
     if (q == 0) {
         a <- 1
