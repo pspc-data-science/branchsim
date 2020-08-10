@@ -95,33 +95,15 @@ add_layer <- function(parent_layer,
     t_comm_parents <- rep(parent_layer$t_comm[p_id], times = n_events)
     t_infect <-  t_infect_parents + t_comm_parents * runif(sum(n_events))
     # Random draws for the number of new infections per infection
-    # event, and the communicable period, for each new infected node.
-    # No need to keep track of parents here.
-    n_infect <- extraDistr::rlgser(sum(n_events), p)
-    t_comm <- rgamma(sum(n_infect), kappa * tbar, kappa)
-    # When q > 0, the natural communicable period can be interrupted.
-    if (q > 0) {
-        n_catch <- rbinom(1, sum(n_infect), q)
-        if (is.infinite(kappaq)) {
-            t_stop <- rep(mbar, n_catch)
-        } else {
-            t_stop <- rgamma(n_catch, kappaq * mbar, kappaq)
-        }
-        # Pad t_stop with Inf; these Inf's won't be picked by pmin
-        # below, and t_comm will default to the uninterrupted case for
-        # those.
-        t_stop <- c(t_stop, rep(Inf, sum(n_infect) - n_catch))
-        # For caught individuals, pick the minimum between t_comm and
-        # t_stop, then shuffle with `sample`
-        if (sum(n_infect) > 1) {
-            # shuffle multiple values with `sample`
-            t_comm <- sample(pmin(t_comm, t_stop))
-        } else {
-            # `sample` will not work with a single value
-            t_comm <- min(t_comm, t_stop)
-        }
-    }
-    new_layer <- tibble(id = seq_len(sum(n_infect)) + max(parent_layer$id),
+    # event, and the for each new infected node.
+    n_infect <- extraDistr::rlgser(sum(n_events), p) # new children per event
+    # Simulate the communicable window duration for children
+    n_new <- sum(n_infect) # total number of new children
+    n_catch <- rbinom(1, n_new, q) # Bernoulli process (q > 0)
+    t_comm <- c(rgamma(n_new - n_catch, kappa * tbar, kappa),
+                rgamma(n_catch, kappaq * mbar, kappaq))
+    # Prepare output
+    new_layer <- tibble(id = seq_len(n_new) + max(parent_layer$id),
                         id_parent =
                             rep(parent_layer$id[p_id], times = n_events) %>%
                             rep(times = n_infect),
