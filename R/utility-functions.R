@@ -2,9 +2,11 @@
 #'
 #' @param tbar Average duration of the communicable window.
 #' @param lambda Poisson rate
-#' @param p Logarithmic distribution parameter
+#' @param mu Expectation of the logarithmic distribution giving the
+#'     number of individuals infected per event
 #' @param q Probability of interruption
-#' @param mbar Average communicable period elapsed at the time of interuption
+#' @param mbar Average communicable period elapsed at the time of
+#'     interuption
 #'
 #' @return The value of \eqn{R_0}.
 #' @export
@@ -12,7 +14,7 @@ calc_R0 <- function(tbar, lambda, mu, q = 0, mbar = NA) {
     if (q == 0) {
         a <- 1
     } else {
-        a <- q * (mbar / tbar + 1)
+        a <- 1 - q * (1 - mbar / tbar)
     }
     return(a * mu * lambda * tbar)
 }
