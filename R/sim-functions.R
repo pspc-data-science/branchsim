@@ -100,8 +100,10 @@ add_layer <- function(parent_layer,
     # Simulate the communicable window duration for children
     n_new <- sum(n_infect) # total number of new children
     n_catch <- rbinom(1, n_new, q) # Bernoulli process (q > 0)
-    t_comm <- c(rgamma(n_new - n_catch, kappa * tbar, kappa),
-                rgamma(n_catch, kappaq * mbar, kappaq))
+    t_comm <-
+        c(rgamma(n_new - n_catch, kappa * tbar, kappa), # tbar, kappa
+          rgamma(n_catch, kappaq * mbar, kappaq)) %>% # mbar, kappaq
+        sample # remove any correlation between parents and children
     # Prepare output
     new_layer <- tibble(id = seq_len(n_new) + max(parent_layer$id),
                         id_parent =
