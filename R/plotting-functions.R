@@ -259,7 +259,7 @@ plot_R0 <- function(my_lambda, my_mu, tbar,
                  x = my_lambda,
                  hjust = 0.5,
                  vjust = ifelse(my_R0 <= 1, 1, 0),
-                 label = bquote(R[0] == .(my_R0)),
+                 label = bquote(R[eff] == .(my_R0)),
                  color = "black",
                  size = 10) +
         theme_bw() +
@@ -270,7 +270,7 @@ plot_R0 <- function(my_lambda, my_mu, tbar,
         # https://trinkerrstuff.wordpress.com/2018/03/15/2246/
         labs(x = "Average number of infectious events per day",
              y = "Average number infected per infectious event",
-             fill = bquote(R[0]))
+             fill = bquote(R[eff]))
 }
 
 
