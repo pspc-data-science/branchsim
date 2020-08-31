@@ -1,4 +1,5 @@
-#' Plot the solution to the renewal equation solution for expectations of the Crump-Mode-Jagers (CMJ) over a random characteristic.
+#' Plot the solution to the renewal equation solution for expectations of the Crump-Mode-Jagers (CMJ) process 
+#' over a random characteristic.
 #'
 #' This function plots the numerical soution to the renewal equation for a CMJ process using the properties of the triple
 #' (lambda_chi, xi_chi, chi). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
@@ -54,16 +55,16 @@ renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = 
 
 
 
-#' A gradient plot of the malthusian parameter as a function of the average number of infectious events per day
-#' and average number infected per infectious event. The malthusian parameter is the exponential parameter in the 
+#' A gradient plot of the Malthusian parameter as a function of the average number of infectious events per day
+#' and average number infected per infectious event. The Malthusian parameter is the exponential parameter in the 
 #' asymptotic limit. 
 #'  
 #' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
 #' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
-#' @param a The shape parameter of the communicable preiod gamma function.
-#' @param b The rate parameter of the communicable preiod gamma function.
+#' @param a The shape parameter of the communicable preiod gamma function. Default = 5.5
+#' @param b The rate parameter of the communicable preiod gamma function. Default = 0.85
 #' 
-#' @return A plot showing a gradient of the malthusian parameter.
+#' @return A plot showing a gradient of the Malthusian parameter.
 #'
 #' @export
 asymptotic_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
@@ -101,8 +102,8 @@ asymptotic_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
 #'  
 #' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
 #' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
-#' @param a The shape parameter of the communicable preiod gamma function.
-#' @param b The rate parameter of the communicable preiod gamma function.
+#' @param a The shape parameter of the communicable preiod gamma function. Default a =5.5.
+#' @param b The rate parameter of the communicable preiod gamma function. Default b = 0.85.
 #' 
 #' @return A plot showing a gradient of the extinction probability.
 #'
@@ -144,8 +145,8 @@ extinct_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
 #'  
 #' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
 #' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
-#' @param a The shape parameter of the communicable preiod gamma function.
-#' @param b The rate parameter of the communicable preiod gamma function.
+#' @param a The shape parameter of the communicable preiod gamma function. Default a = 5.5.
+#' @param b The rate parameter of the communicable preiod gamma function. Default b = 0.85.
 #' 
 #' @return A plot showing a gradient of the average component size if extinction occurs.
 #'
@@ -191,10 +192,10 @@ component_size_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
 
 #' The plot of a single mother's distribution function for her infected population.
 #'  
-#' @param a The shape parameter of the communicable preiod gamma function.
-#' @param b The rate parameter of the communicable preiod gamma function.
-#' @param lambda The arrival rate of infectious interactions.
-#' @param mu The average number infected per infectious interaction
+#' @param a The shape parameter of the communicable preiod gamma function. Default a = 5.5.
+#' @param b The rate parameter of the communicable preiod gamma function. Default b = 0.85.
+#' @param lambda The arrival rate of infectious interactions. Default lambda = .11.
+#' @param mu The average number infected per infectious interaction. Default mu = 1.5.
 #' 
 #' @return A plot showing a the distribution function of a single mother's infected population
 #'
@@ -218,8 +219,8 @@ plot_single_mother_dist<- function(a=5.5,b=.85,lambda=.11, mu = 1.5){
 
 #' The plot of communicable window's distribution.
 #'  
-#' @param a The shape parameter of the communicable preiod gamma function.
-#' @param b The rate parameter of the communicable preiod gamma function.
+#' @param a The shape parameter of the communicable preiod gamma function. Default a = 5.5.
+#' @param b The rate parameter of the communicable preiod gamma function. Default b = 0.85.
 #' 
 #' @return A plot showing a the distribution function of the communicable period.
 #'

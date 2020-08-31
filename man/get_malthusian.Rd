@@ -2,8 +2,8 @@
 % Please edit documentation in R/CMJ-functions.R
 \name{get_malthusian}
 \alias{get_malthusian}
-\title{A function for obtaining the Malthusian parameter of the CMJ process. It also yel
-Used with the renewal eqaution, it will give the expectation for the instantaneous number infected
+\title{A function for obtaining the Malthusian parameter of the CMJ process. It also returns the beta parameter from
+the asymptotic solution of the renewal equation. Used with the renewal eqaution, it will give the expectation for the instantaneous number infected
 as a function of time.}
 \usage{
 get_malthusian(a = 10, b = 1, lambda = 0.11, p = 0.5)
@@ -19,10 +19,10 @@ get_malthusian(a = 10, b = 1, lambda = 0.11, p = 0.5)
 Default p=0.5}
 }
 \value{
-The malthusian parameter alpha, and the beta parameter.
+The Malthusian parameter alpha, and the beta parameter.
 }
 \description{
-A function for obtaining the Malthusian parameter of the CMJ process. It also yel
-Used with the renewal eqaution, it will give the expectation for the instantaneous number infected
+A function for obtaining the Malthusian parameter of the CMJ process. It also returns the beta parameter from
+the asymptotic solution of the renewal equation. Used with the renewal eqaution, it will give the expectation for the instantaneous number infected
 as a function of time.
 }

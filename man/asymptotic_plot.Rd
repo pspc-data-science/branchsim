@@ -2,8 +2,8 @@
 % Please edit documentation in R/CMJ-plotting-functions.R
 \name{asymptotic_plot}
 \alias{asymptotic_plot}
-\title{A gradient plot of the malthusian parameter as a function of the average number of infectious events per day
-and average number infected per infectious event. The malthusian parameter is the exponential parameter in the
+\title{A gradient plot of the Malthusian parameter as a function of the average number of infectious events per day
+and average number infected per infectious event. The Malthusian parameter is the exponential parameter in the
 asymptotic limit.}
 \usage{
 asymptotic_plot(lambda_limits, mu_limits, a = 5.5, b = 0.85)
@@ -13,15 +13,15 @@ asymptotic_plot(lambda_limits, mu_limits, a = 5.5, b = 0.85)
 
 \item{mu_limits}{A vector of the lower and umper bounds of the average numbre infected per interaction.}
 
-\item{a}{The shape parameter of the communicable preiod gamma function.}
+\item{a}{The shape parameter of the communicable preiod gamma function. Default = 5.5}
 
-\item{b}{The rate parameter of the communicable preiod gamma function.}
+\item{b}{The rate parameter of the communicable preiod gamma function. Default = 0.85}
 }
 \value{
-A plot showing a gradient of the malthusian parameter.
+A plot showing a gradient of the Malthusian parameter.
 }
 \description{
-A gradient plot of the malthusian parameter as a function of the average number of infectious events per day
-and average number infected per infectious event. The malthusian parameter is the exponential parameter in the
+A gradient plot of the Malthusian parameter as a function of the average number of infectious events per day
+and average number infected per infectious event. The Malthusian parameter is the exponential parameter in the
 asymptotic limit.
 }

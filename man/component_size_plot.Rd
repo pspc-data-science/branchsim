@@ -13,9 +13,9 @@ component_size_plot(lambda_limits, mu_limits, a = 5.5, b = 0.85)
 
 \item{mu_limits}{A vector of the lower and umper bounds of the average numbre infected per interaction.}
 
-\item{a}{The shape parameter of the communicable preiod gamma function.}
+\item{a}{The shape parameter of the communicable preiod gamma function. Default a = 5.5.}
 
-\item{b}{The rate parameter of the communicable preiod gamma function.}
+\item{b}{The rate parameter of the communicable preiod gamma function. Default b = 0.85.}
 }
 \value{
 A plot showing a gradient of the average component size if extinction occurs.

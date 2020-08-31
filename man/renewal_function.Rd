@@ -2,19 +2,19 @@
 % Please edit documentation in R/CMJ-functions.R
 \name{renewal_function}
 \alias{renewal_function}
-\title{Renewal equation solution to the expectation of the Crump-Mode-Jagers (CMJ) over a random characteristic.}
+\title{Renewal equation solution to the expectation of the Crump-Mode-Jagers (CMJ) process over a random characteristic.}
 \usage{
 renewal_function(dMu, G = 1, Time_limit = 100, nstep = 10000)
 }
 \arguments{
-\item{dMu}{The function dMu(t) that defines mu(dt) = dMu(t) dt. Function as argument.}
+\item{dMu}{The function dMu(t) defines mu(dt) = dMu(t) dt. Function as argument.}
 
 \item{G}{A function that that defines the expectation of the random characteristic of interest. Set to G=1
 by default (total number born). Function as argument.}
 
-\item{nstep}{The number of steps for the integration.}
+\item{nstep}{The number of steps for the integration. Default is 10^4.}
 
-\item{T}{The maximum of the time interval for integration 0,T.}
+\item{T}{The maximum of the time interval for integration 0,T. Default is T =100.}
 }
 \value{
 A tibble containing the time steps with the solution to the renewal equation.

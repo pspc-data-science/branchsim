@@ -11,11 +11,13 @@ calc_R0(tbar, lambda, mu, q = 0, mbar = NA)
 
 \item{lambda}{Poisson rate}
 
+\item{mu}{Expectation of the logarithmic distribution giving the
+number of individuals infected per event}
+
 \item{q}{Probability of interruption}
 
-\item{mbar}{Average communicable period elapsed at the time of interuption}
-
-\item{p}{Logarithmic distribution parameter}
+\item{mbar}{Average communicable period elapsed at the time of
+interuption}
 }
 \value{
 The value of \eqn{R_0}.

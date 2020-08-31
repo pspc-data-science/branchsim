@@ -19,7 +19,7 @@ find_gamma_parameters(m = 5.5, a = 0, b = 11.5, int_value = 0.975)
 Default p=0.5}
 }
 \value{
-The average component size.
+The shape and rate parameters of the gamma distribution.
 }
 \description{
 Get the shape and rate parameter of a gamma distribution given an integration interval and mean.

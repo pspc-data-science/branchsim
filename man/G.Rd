@@ -9,9 +9,9 @@ as a function of time.}
 G(A = 10, B = 1)
 }
 \arguments{
-\item{A}{The shape parameter of the gamma life time distribution. Default a =10}
+\item{A}{The shape parameter of the gamma life time distribution. Default A =10}
 
-\item{B}{The rate parameter of the gamma life time distribution. Default b = 1}
+\item{B}{The rate parameter of the gamma life time distribution. Default B = 1}
 }
 \value{
 A function G(t) = 1 - F(t); F(t) is the life-time distribution.

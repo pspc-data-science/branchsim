@@ -2,7 +2,8 @@
 % Please edit documentation in R/CMJ-plotting-functions.R
 \name{renewal_plot}
 \alias{renewal_plot}
-\title{Plot the solution to the renewal equation solution for expectations of the Crump-Mode-Jagers (CMJ) over a random characteristic.}
+\title{Plot the solution to the renewal equation solution for expectations of the Crump-Mode-Jagers (CMJ) process
+over a random characteristic.}
 \usage{
 renewal_plot(
   Lambda = 0.11,

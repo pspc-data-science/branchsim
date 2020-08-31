@@ -7,13 +7,13 @@
 plot_single_mother_dist(a = 5.5, b = 0.85, lambda = 0.11, mu = 1.5)
 }
 \arguments{
-\item{a}{The shape parameter of the communicable preiod gamma function.}
+\item{a}{The shape parameter of the communicable preiod gamma function. Default a = 5.5.}
 
-\item{b}{The rate parameter of the communicable preiod gamma function.}
+\item{b}{The rate parameter of the communicable preiod gamma function. Default b = 0.85.}
 
-\item{lambda}{The arrival rate of infectious interactions.}
+\item{lambda}{The arrival rate of infectious interactions. Default lambda = .11.}
 
-\item{mu}{The average number infected per infectious interaction}
+\item{mu}{The average number infected per infectious interaction. Default mu = 1.5.}
 }
 \value{
 A plot showing a the distribution function of a single mother's infected population
