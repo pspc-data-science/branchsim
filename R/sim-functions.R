@@ -225,6 +225,9 @@ run_sims <- function(nsim = 10,
     # run nsim replications for each row of input args
     treelist <- pmap(args, run_reps)
     # put results in a tbl, along with sim parameters
-    sim_data <- bind_cols(args, tibble(treelist))
+    sim_data <-
+        bind_cols(args, tibble(treelist)) %>%
+        # Calculate paths from trees for plotting
+        mutate(paths = map2(treelist, tmax, treelist_to_paths))
     return(sim_data)
 }
