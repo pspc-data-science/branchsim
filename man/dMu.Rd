@@ -2,7 +2,7 @@
 % Please edit documentation in R/CMJ-functions.R
 \name{dMu}
 \alias{dMu}
-\title{A function for the infinitesimal expectation in births: mu(dt) = dMu(t) dt}
+\title{A function for the infinitesimal expectation in births: \eqn{mu(dt) = dMu(t)\,dt}}
 \usage{
 dMu(A = 10, B = 1, Lambda = 0.11, P = 0.5)
 }
@@ -17,8 +17,8 @@ dMu(A = 10, B = 1, Lambda = 0.11, P = 0.5)
 Default P=0.5}
 }
 \value{
-A function of t: dMu(t).
+A function of t: \eqn{dMu(t)}.
 }
 \description{
-A function for the infinitesimal expectation in births: mu(dt) = dMu(t) dt
+A function for the infinitesimal expectation in births: \eqn{mu(dt) = dMu(t)\,dt}
 }

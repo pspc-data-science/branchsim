@@ -32,6 +32,6 @@ A plot showing the solution of the renewal equation with the malthusian paramete
 }
 \description{
 This function plots the numerical soution to the renewal equation for a CMJ process using the properties of the triple
-(lambda_chi, xi_chi, chi). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
-Z = G(t) + int_0^t Z(t - u) mu(du)
+(\eqn{\lambda_{\chi}}, \eqn{\xi_\chi}, \eqn{\chi}). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
+\eqn{Z = G(t) + \int_0^t Z(t - u)\,mu(du)}
 }

@@ -1,6 +1,6 @@
 Package: branchsim
-Title: Branching process simulation of epidemics
-Version: 0.0.0.9000
+Title: Gamma negative binomial branching process simulation of epidemics
+Version: 0.1.0
 Authors@R: 
     c(person(given = "Jérôme",
              family = "Levesque",
@@ -10,8 +10,8 @@ Authors@R:
       	     family = "Maybury",
 	     role = c("aut"),
 	     email = "david.maybury@tpsgc-pwgsc.gc.ca"))
-Description: Simulates the propagation of an epidemic as a branching process. The model allows for the stochastic interruption of communicable periods to study the effect of contact tracing, for example.
-License: `use_mit_license()`
+Description: A tool suite, including a simulation engine, for a Crump-Mode-Jagers continuous time branching process of an epidemic propagation based on a gamma subordinated negative binomial process (GNBBP). The simulation engine builds continuous time sample paths with the inclusion of propagation interruption mechanisms. Expectations over random characteristics are made possible by numerical integration of the renewal equation. Malthusian parameters and asymptotic analysis is also included. See Levesque, Maybury, and Shaw https://www.medrxiv.org/content/10.1101/2020.07.08.20149039v3 for model details. 
+License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

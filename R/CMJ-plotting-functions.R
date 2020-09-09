@@ -2,8 +2,8 @@
 #' over a random characteristic.
 #'
 #' This function plots the numerical soution to the renewal equation for a CMJ process using the properties of the triple
-#' (lambda_chi, xi_chi, chi). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
-#' Z = G(t) + int_0^t Z(t - u) mu(du)
+#' (\eqn{\lambda_{\chi}}, \eqn{\xi_\chi}, \eqn{\chi}). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
+#' \eqn{Z = G(t) + \int_0^t Z(t - u)\,mu(du)}
 #'  
 #' @param Lambda The arrival rate of infectious interactions.
 #' @param mu The average number infected per infectious interaction
@@ -219,8 +219,8 @@ plot_single_mother_dist<- function(a=5.5,b=.85,lambda=.11, mu = 1.5){
 
 #' The plot of communicable window's distribution.
 #'  
-#' @param a The shape parameter of the communicable preiod gamma function. Default a = 5.5.
-#' @param b The rate parameter of the communicable preiod gamma function. Default b = 0.85.
+#' @param a The shape parameter of the communicable period gamma function. Default a = 5.5.
+#' @param b The rate parameter of the communicable period gamma function. Default b = 0.85.
 #' 
 #' @return A plot showing a the distribution function of the communicable period.
 #'

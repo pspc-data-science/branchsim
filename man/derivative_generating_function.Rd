@@ -2,7 +2,7 @@
 % Please edit documentation in R/CMJ-functions.R
 \name{derivative_generating_function}
 \alias{derivative_generating_function}
-\title{The derivative of the generating function of the branching process f(s) = sum_k p_k s^k.}
+\title{The derivative of the generating function of the branching process \eqn{f(s) = \sum_k p_k s^k}.}
 \usage{
 derivative_generating_function(s, a = 10, b = 1, lambda = 0.11, p = 0.5)
 }
@@ -22,5 +22,5 @@ Default p=0.5}
 The evaluation the derivative of the generating function at s.
 }
 \description{
-The derivative of the generating function of the branching process f(s) = sum_k p_k s^k.
+The derivative of the generating function of the branching process \eqn{f(s) = \sum_k p_k s^k}.
 }

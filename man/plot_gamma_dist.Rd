@@ -7,9 +7,9 @@
 plot_gamma_dist(a = 5.5, b = 0.85)
 }
 \arguments{
-\item{a}{The shape parameter of the communicable preiod gamma function. Default a = 5.5.}
+\item{a}{The shape parameter of the communicable period gamma function. Default a = 5.5.}
 
-\item{b}{The rate parameter of the communicable preiod gamma function. Default b = 0.85.}
+\item{b}{The rate parameter of the communicable period gamma function. Default b = 0.85.}
 }
 \value{
 A plot showing a the distribution function of the communicable period.

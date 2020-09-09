@@ -14,7 +14,7 @@ G(A = 10, B = 1)
 \item{B}{The rate parameter of the gamma life time distribution. Default B = 1}
 }
 \value{
-A function G(t) = 1 - F(t); F(t) is the life-time distribution.
+A function \eqn{G(t) = 1 - F(t)}; F(t) is the life-time distribution.
 }
 \description{
 A function for the expecation for the number of individuals existing in the process at moment t.

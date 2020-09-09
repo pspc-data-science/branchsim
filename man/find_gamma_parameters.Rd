@@ -13,7 +13,7 @@ find_gamma_parameters(m = 5.5, a = 0, b = 11.5, int_value = 0.975)
 
 \item{b}{The upper limit of intefration. Default is b=11.5}
 
-\item{int_value}{The confidence level int_a^b f(x) dx = int_value. Default is int_value = .975}
+\item{int_value}{The confidence level \eqn{\int_a^b f(x)\,dx = int_value}. Default is int_value = .975}
 
 \item{P}{The parameter of the logarithmic distribution for the number of infected during an event.
 Default p=0.5}

@@ -1,13 +1,13 @@
 #' Renewal equation solution to the expectation of the Crump-Mode-Jagers (CMJ) process over a random characteristic.
 #'
 #' This function numerically solves the renewal equation for a CMJ process using the properties of the triple
-#' (lambda_chi, xi_chi, chi). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
-#' Z = G(t) + int_0^t Z(t - u) mu(du)
+#' (\eqn{\lambda_{\chi}}, \eqn{\xi_\chi}, \eqn{\chi}). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
+#' \eqn{Z = G(t) + \int_0^t Z(t - u)\, mu(du)}
 #'  
-#' @param dMu The function dMu(t) defines mu(dt) = dMu(t) dt. Function as argument.
-#' @param G A function that that defines the expectation of the random characteristic of interest. Set to G=1 
-#' by default (total number born). Function as argument.
-#' @param T The maximum of the time interval for integration 0,T. Default is T =100.
+#' @param dMu The function \eqn{dMu(t)} defines \eqn{mu(dt) = dMu(t)\,dt}. Function as argument.
+#' @param G A function that that defines the expectation of the random characteristic of interest. Default G=1 
+#' (total number born). Function as argument.
+#' @param T The maximum of the time interval for integration 0,T. Default is \code{T =100}.
 #' @param nstep The number of steps for the integration. Default is 10^4.
 #' 
 #' @return A tibble containing the time steps with the solution to the renewal equation.
@@ -35,7 +35,7 @@ renewal_function<- function(dMu, G=1, Time_limit=100, nstep = 10000){
   
 }
 
-#' A function for the infinitesimal expectation in births: mu(dt) = dMu(t) dt
+#' A function for the infinitesimal expectation in births: \eqn{mu(dt) = dMu(t)\,dt}
 #'
 #' @param A The shape parameter of the gamma life time distribution. Default A =10
 #' @param B The rate parameter of the gamma life time distribution. Default B = 1
@@ -43,7 +43,7 @@ renewal_function<- function(dMu, G=1, Time_limit=100, nstep = 10000){
 #' @param P The parameter of the logarithmic distribution for the number of infected during an event.
 #' Default P=0.5
 #' 
-#' @return A function of t: dMu(t).
+#' @return A function of t: \eqn{dMu(t)}.
 #'
 #' @export
 dMu<- function(A=10, B=1, Lambda = .11, P = 0.5){
@@ -72,7 +72,7 @@ dMu<- function(A=10, B=1, Lambda = .11, P = 0.5){
 #' @param A The shape parameter of the gamma life time distribution. Default A =10
 #' @param B The rate parameter of the gamma life time distribution. Default B = 1
 #' 
-#' @return A function G(t) = 1 - F(t); F(t) is the life-time distribution.
+#' @return A function \eqn{G(t) = 1 - F(t)}; F(t) is the life-time distribution.
 #'
 #' @export
 G<- function(A=10, B=1){
@@ -128,7 +128,7 @@ get_malthusian<- function(a=10,b=1, lambda=.11, p=.5){
   
 }
 
-#' A function for obtaining the p parameter of the log-series distribution from its mean, mu. 
+#' A function for obtaining the p parameter of the log-series distribution from its mean, \eqn{mu}. 
 #'
 #' @param mu The mean of a log-series distribution.
 #' 
@@ -174,7 +174,7 @@ get_extinct_prob<- function(a=10, b=1, lambda = .11, p=.5){
   
 }
 
-#' The generating function of the branching process f(s) = sum_k p_k s^k.
+#' The generating function of the branching process \eqn{f(s) = \sum_k p_k s^k}.
 #'
 #' @param s The argument of the generating function. 0<s<1.
 #' @param a The shape parameter of the gamma life time distribution. Default a =10
@@ -195,7 +195,7 @@ generating_function<- function(s, a=10, b=1, lambda = .11, p=.5){
 }
 
 
-#' The derivative of the generating function of the branching process f(s) = sum_k p_k s^k.
+#' The derivative of the generating function of the branching process \eqn{f(s) = \sum_k p_k s^k}.
 #'
 #' @param s The argument of the generating function. 0<s<1.
 #' @param a The shape parameter of the gamma life time distribution. Default a =10
@@ -260,7 +260,7 @@ average_component_size<- function(u, A=10, B=1, Lambda = .11, P=.5){
 #' @param m The mean of the gamma distribution.
 #' @param a The lower limit of integration. Default is a=0
 #' @param b The upper limit of intefration. Default is b=11.5
-#' @param int_value The confidence level int_a^b f(x) dx = int_value. Default is int_value = .975
+#' @param int_value The confidence level \eqn{\int_a^b f(x)\,dx = int_value}. Default is int_value = .975
 #' @param P The parameter of the logarithmic distribution for the number of infected during an event.
 #' Default p=0.5
 #' 

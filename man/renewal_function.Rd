@@ -7,20 +7,20 @@
 renewal_function(dMu, G = 1, Time_limit = 100, nstep = 10000)
 }
 \arguments{
-\item{dMu}{The function dMu(t) defines mu(dt) = dMu(t) dt. Function as argument.}
+\item{dMu}{The function \eqn{dMu(t)} defines \eqn{mu(dt) = dMu(t)\,dt}. Function as argument.}
 
-\item{G}{A function that that defines the expectation of the random characteristic of interest. Set to G=1
-by default (total number born). Function as argument.}
+\item{G}{A function that that defines the expectation of the random characteristic of interest. Default G=1
+(total number born). Function as argument.}
 
 \item{nstep}{The number of steps for the integration. Default is 10^4.}
 
-\item{T}{The maximum of the time interval for integration 0,T. Default is T =100.}
+\item{T}{The maximum of the time interval for integration 0,T. Default is \code{T =100}.}
 }
 \value{
 A tibble containing the time steps with the solution to the renewal equation.
 }
 \description{
 This function numerically solves the renewal equation for a CMJ process using the properties of the triple
-(lambda_chi, xi_chi, chi). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
-Z = G(t) + int_0^t Z(t - u) mu(du)
+(\eqn{\lambda_{\chi}}, \eqn{\xi_\chi}, \eqn{\chi}). See appendix C of Branching Processes in Biology by Kimmel and Axelrod for more details.
+\eqn{Z = G(t) + \int_0^t Z(t - u)\, mu(du)}
 }

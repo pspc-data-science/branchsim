@@ -4,9 +4,9 @@
 \name{branchsim-package}
 \alias{branchsim}
 \alias{branchsim-package}
-\title{branchsim: Branching process simulation of epidemics}
+\title{branchsim: Gamma negative binomial branching process simulation of epidemics}
 \description{
-Simulates the propagation of an epidemic as a branching process. The model allows for the stochastic interruption of communicable periods to study the effect of contact tracing, for example.
+A tool suite, including a simulation engine, for a Crump-Mode-Jagers continuous time branching process of an epidemic propagation based on a gamma subordinated negative binomial process (GNBBP). The simulation engine builds continuous time sample paths with the inclusion of propagation interruption mechanisms. Expectations over random characteristics are made possible by numerical integration of the renewal equation. Malthusian parameters and asymptotic analysis is also included. See Levesque, Maybury, and Shaw https://www.medrxiv.org/content/10.1101/2020.07.08.20149039v3 for model details.
 }
 \author{
 \strong{Maintainer}: Jérôme Levesque \email{jerome.levesque@tpsgc-pwgsc.gc.ca}
