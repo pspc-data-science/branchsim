@@ -33,7 +33,7 @@ list-column \code{treelist}. This is a list of lists of lists.
 Each sublist corresponds to a unique combination of input
 parameters, and contains \code{nsim} trees (i.e. simulated
 paths). Each individual tree is itself a list of tibbles, with
-one tibble for each depth level.
+one tibble for each simulation layer.
 }
 \description{
 This function calls \code{\link{build_tree}} over a range of input

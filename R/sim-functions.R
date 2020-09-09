@@ -1,23 +1,25 @@
 #' Initialize the tree
 #'
-#' Creates the first layer of a tree.
+#' Creates the first layer of an infection tree.
 #'
-#' @param n_start An integer greater or equal to 1. Number of nodes in
-#'     the initial layer.
+#' @param n_start An integer greater than or equal to 1. Number of
+#'     nodes in the initial layer.
 #' @param tbar A non-negative scalar. Average duration of the
-#'     communicable windows of the new nodes. Together with
+#'     communicable windows of the initial nodes. Together with
 #'     \code{kappa}, it determines a shape parameter \code{tbar *
 #'     kappa} for the the Gamma distribution from which we draw a
 #'     communicable period for each new node.
 #' @param kappa A non-negative scalar (including \code{Inf}). Rate
 #'     parameter for the Gamma distribution from which we draw a
 #'     communicable period duration for each new node. If \code{kappa
-#'     = Inf}, then the draw is deterministic, and all communicable
-#'     periods are exactly equal to \code{tbar}.
+#'     == Inf}, then the draw is deterministic, with all communicable
+#'     periods exactly equal to \code{tbar}.
 #' 
-#' @return A \code{tibble} with one row for each new node, and three
-#'     columns: \code{id_parent}, \code{t_infect}, and \code{t_comm}.
+#' @return A \code{tibble} with one row for each new node, and five
+#'     columns: \code{id}, \code{id_parent}, \code{id_layer},
+#'     \code{t_infect}, and \code{t_comm}.
 #'
+#' @export
 make_first_layer <- function(n_start, tbar, kappa) {
       first_layer <- tibble(id = seq_len(n_start),
                             id_parent = 0,
@@ -28,16 +30,17 @@ make_first_layer <- function(n_start, tbar, kappa) {
 }
 
 
-#' Builds the next generation of nodes in a tree
+#' Builds the next generation of nodes in a tree.
 #'
 #' Given a set of parent nodes and their properties, this function
 #' simulates the next generation of infected nodes.
 #'
 #' @param parent_layer A \code{data.frame}. Contains the properties of
-#'     each parent node. The columns are \code{id_parent} (the index
-#'     of the parent's parent node), \code{t_infect} (the clock time
-#'     at which that parent was infected), \code{t_comm} (the duration
-#'     of the parent's communicable period).
+#'     each parent node. The columns are: \code{id} (the index of the
+#'     parent node), \code{id_parent} (the index of the parent's
+#'     parent node), \code{t_infect} (the clock time at which that
+#'     parent was infected), \code{t_comm} (the duration of the
+#'     parent's communicable period).
 #' @param tmax A non-negative scalar. Cutoff time for the simulated
 #'     branches.
 #' @param tbar A non-negative scalar. Average duration of the
@@ -45,28 +48,32 @@ make_first_layer <- function(n_start, tbar, kappa) {
 #'     \code{kappa}, it determines a shape parameter \code{tbar *
 #'     kappa} for the the Gamma distribution from which we draw a
 #'     communicable period for each new node.
-#' @param p A scalar between 0 and 1. Parameter for a logarithmic
-#'     distribution, giving the expected number of new infections per
-#'     infection event.
-#' @param lambda A non-negative scalar. Parameter for a Poisson
-#'     distribution, giving the expected number of infection events
-#'     per parent node.
+#' @param p A scalar greater than 0 and smaller than 1. Parameter for
+#'     the logarithmic distribution that governs the number of new
+#'     infections per infectious event.
+#' @param lambda A non-negative scalar. Rate parameter for the Poisson
+#'     distribution that governs the number of infectious events per
+#'     parent node.
 #' @param kappa A non-negative scalar (including \code{Inf}). Rate
 #'     parameter for the Gamma distribution from which we draw a
 #'     communicable period duration for each new node. If \code{kappa
-#'     = Inf}, then the draw is deterministic, and all communicable
-#'     periods are exactly equal to \code{tbar}.
+#'     = Inf}, then the draw is deterministic, with all communicable
+#'     periods exactly equal to \code{tbar}.
 #' @param q A scalar between 0 and 1. The probability that a parent
-#'     node is intercepted (e.g. through contact tracing).
-#' @param mbar A non-negative scalar. The value replacing \code{tbar}
-#'     for intercepted parent nodes. This parameter has no role if
-#'     \code{q = 0}.
-#' @param kappaq A non-negative scalar. The value replacing
-#'     \code{kappa} for intercepted parent nodes. This parameter has
-#'     no role if \code{q = 0}.
+#'     node has a communicable period of the second kind (a Gamma
+#'     distribution with mean \code{mbar}, and shape \code{kappaq}).
+#' @param mbar A non-negative scalar. The mean duration of
+#'     communicable windows of the second kind. This parameter has no
+#'     role if \code{q == 0}.
+#' @param kappaq A non-negative scalar. The shape parameter for
+#'     communicable windows of the second kind. This parameter has no
+#'     role if \code{q == 0}.
 #'
-#' @return A \code{tibble} with one row for each new node, and three
-#'     columns: \code{id_parent}, \code{t_infect}, and \code{t_comm}.
+#' @return A \code{data.frame} with one row for each new node, and
+#'     four columns: \code{id} (the node's unique ID),
+#'     \code{id_parent} (the parent ID), \code{t_infect} (the time at
+#'     which the node became infectious), and \code{t_comm} (the
+#'     duration of the communicable window).
 #'
 #' @export
 add_layer <- function(parent_layer,
@@ -118,17 +125,19 @@ add_layer <- function(parent_layer,
 #' Simulate a single epidemic path
 #'
 #' For information about input parameters, see the documentation for
-#' \code{\link{add_layer}}. The function starts by generating a single
-#' parent and its communicable period of random duration, and starting
-#' at \code{t_infect = 0}. The function then builds a tree starting at
-#' the initial node by iteratively calling \code{\link{add_layer}},
-#' until it receives an empty tibble, which happens either when the
-#' epidemic extinguishes, or all branches have extended beyond
-#' \code{t_max}.
+#' \code{\link{add_layer}}. The function starts by generating
+#' \code{nstart} initial parents with their communicable periods of
+#' random duration, all starting at \code{t_infect = 0}. The function
+#' then builds a tree from these initial nodes by iteratively calling
+#' \code{\link{add_layer}}. The iteration stops when it receives an
+#' empty tibble, which happens either when the epidemic extinguishes,
+#' or all branches have extended beyond \code{t_max}.
+#'
+#' @param ... Input parameters for \code{\link{add_layer}}.
 #'
 #' @return A list of tibbles, each one containing information about
-#'     new nodes generated from the previous ones. Effectively this is
-#'     a tree.
+#'     new nodes generated from the previous ones. This list is a
+#'     tree.
 #'
 #' @export
 build_tree <- function(nstart,
@@ -183,7 +192,7 @@ build_tree <- function(nstart,
 #'     Each sublist corresponds to a unique combination of input
 #'     parameters, and contains \code{nsim} trees (i.e. simulated
 #'     paths). Each individual tree is itself a list of tibbles, with
-#'     one tibble for each depth level.
+#'     one tibble for each simulation layer.
 #'
 #' @export
 run_sims <- function(nsim = 10,

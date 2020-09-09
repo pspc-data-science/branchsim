@@ -6,18 +6,21 @@
 \usage{
 build_tree(nstart, tmax, tbar, p, lambda, kappa, q, mbar, kappaq, ceil)
 }
+\arguments{
+\item{...}{Input parameters for \code{\link{add_layer}}.}
+}
 \value{
 A list of tibbles, each one containing information about
-new nodes generated from the previous ones. Effectively this is
-a tree.
+new nodes generated from the previous ones. This list is a
+tree.
 }
 \description{
 For information about input parameters, see the documentation for
-\code{\link{add_layer}}. The function starts by generating a single
-parent and its communicable period of random duration, and starting
-at \code{t_infect = 0}. The function then builds a tree starting at
-the initial node by iteratively calling \code{\link{add_layer}},
-until it receives an empty tibble, which happens either when the
-epidemic extinguishes, or all branches have extended beyond
-\code{t_max}.
+\code{\link{add_layer}}. The function starts by generating
+\code{nstart} initial parents with their communicable periods of
+random duration, all starting at \code{t_infect = 0}. The function
+then builds a tree from these initial nodes by iteratively calling
+\code{\link{add_layer}}. The iteration stops when it receives an
+empty tibble, which happens either when the epidemic extinguishes,
+or all branches have extended beyond \code{t_max}.
 }

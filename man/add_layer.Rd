@@ -2,16 +2,17 @@
 % Please edit documentation in R/sim-functions.R
 \name{add_layer}
 \alias{add_layer}
-\title{Builds the next generation of nodes in a tree}
+\title{Builds the next generation of nodes in a tree.}
 \usage{
 add_layer(parent_layer, tmax, tbar, p, lambda, kappa, q, mbar, kappaq)
 }
 \arguments{
 \item{parent_layer}{A \code{data.frame}. Contains the properties of
-each parent node. The columns are \code{id_parent} (the index
-of the parent's parent node), \code{t_infect} (the clock time
-at which that parent was infected), \code{t_comm} (the duration
-of the parent's communicable period).}
+each parent node. The columns are: \code{id} (the index of the
+parent node), \code{id_parent} (the index of the parent's
+parent node), \code{t_infect} (the clock time at which that
+parent was infected), \code{t_comm} (the duration of the
+parent's communicable period).}
 
 \item{tmax}{A non-negative scalar. Cutoff time for the simulated
 branches.}
@@ -22,34 +23,38 @@ communicable windows of the new nodes. Together with
     kappa} for the the Gamma distribution from which we draw a
 communicable period for each new node.}
 
-\item{p}{A scalar between 0 and 1. Parameter for a logarithmic
-distribution, giving the expected number of new infections per
-infection event.}
+\item{p}{A scalar greater than 0 and smaller than 1. Parameter for
+the logarithmic distribution that governs the number of new
+infections per infectious event.}
 
-\item{lambda}{A non-negative scalar. Parameter for a Poisson
-distribution, giving the expected number of infection events
-per parent node.}
+\item{lambda}{A non-negative scalar. Rate parameter for the Poisson
+distribution that governs the number of infectious events per
+parent node.}
 
 \item{kappa}{A non-negative scalar (including \code{Inf}). Rate
 parameter for the Gamma distribution from which we draw a
 communicable period duration for each new node. If \code{kappa
-    = Inf}, then the draw is deterministic, and all communicable
-periods are exactly equal to \code{tbar}.}
+    = Inf}, then the draw is deterministic, with all communicable
+periods exactly equal to \code{tbar}.}
 
 \item{q}{A scalar between 0 and 1. The probability that a parent
-node is intercepted (e.g. through contact tracing).}
+node has a communicable period of the second kind (a Gamma
+distribution with mean \code{mbar}, and shape \code{kappaq}).}
 
-\item{mbar}{A non-negative scalar. The value replacing \code{tbar}
-for intercepted parent nodes. This parameter has no role if
-\code{q = 0}.}
+\item{mbar}{A non-negative scalar. The mean duration of
+communicable windows of the second kind. This parameter has no
+role if \code{q == 0}.}
 
-\item{kappaq}{A non-negative scalar. The value replacing
-\code{kappa} for intercepted parent nodes. This parameter has
-no role if \code{q = 0}.}
+\item{kappaq}{A non-negative scalar. The shape parameter for
+communicable windows of the second kind. This parameter has no
+role if \code{q == 0}.}
 }
 \value{
-A \code{tibble} with one row for each new node, and three
-columns: \code{id_parent}, \code{t_infect}, and \code{t_comm}.
+A \code{data.frame} with one row for each new node, and
+four columns: \code{id} (the node's unique ID),
+\code{id_parent} (the parent ID), \code{t_infect} (the time at
+which the node became infectious), and \code{t_comm} (the
+duration of the communicable window).
 }
 \description{
 Given a set of parent nodes and their properties, this function
