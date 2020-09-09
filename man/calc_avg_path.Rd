@@ -13,6 +13,27 @@ calc_avg_path(
   nstep = 10000
 )
 }
+\arguments{
+\item{lambda}{A non-negative scalar. Rate parameter for the Poisson
+distribution that governs the number of infectious events per
+parent node.}
+
+\item{mu}{A scalar greater than 1. Average number of infections
+resulting from each infectious interaction.}
+
+\item{A}{The shape parameter of the gamma life time distribution (default: 5.5).}
+
+\item{B}{The rate parameter of the gamma life time distribution (default: 0.85).}
+
+\item{tmax}{A scalar greater than 0. Calculate path for times between 0 and this value.}
+
+\item{nstep}{Grid size.}
+}
+\value{
+A \code{data.frame} with columns \code{time},
+\code{n_infected} (cumulative number infected -- strictly
+increasing), \code{n_infectious} (number infectious at time \code{time}).
+}
 \description{
 Compute average epidemic path
 }

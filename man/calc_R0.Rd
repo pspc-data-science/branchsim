@@ -14,10 +14,10 @@ calc_R0(tbar, lambda, mu, q = 0, mbar = NA)
 \item{mu}{Expectation of the logarithmic distribution giving the
 number of individuals infected per event}
 
-\item{q}{Probability of interruption}
+\item{q}{Probability of node having a communicable window of the
+second kind.}
 
-\item{mbar}{Average communicable period elapsed at the time of
-interuption}
+\item{mbar}{Average duration for communicable windows of the second kind.}
 }
 \value{
 The value of \eqn{R_0}.

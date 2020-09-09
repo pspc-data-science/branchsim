@@ -7,11 +7,20 @@
 find_kappa(tbar, p_val, p = 0.95)
 }
 \arguments{
-\item{q}{}
+\item{tbar}{A scalar greater than 0. Average duration of the
+communicable window.}
+
+\item{p_val}{A scalar greater than 0. Upper quantile of the
+communicable window.}
+
+\item{p}{A scalar greater than 0 and smaller than 1. Quantile level
+(default 0.95)}
 }
 \value{
 A shape parameter higher than zero
 }
 \description{
-Find Gamma rate parameter
+Given the average duration of the communicable window, and an upper
+bound corresponding to the \eqn{p}-th quantile (default \code{p =
+0.95}), find the corresponding Gamma rate parameter.
 }
