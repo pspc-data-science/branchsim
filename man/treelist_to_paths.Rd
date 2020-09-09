@@ -16,6 +16,12 @@ of tibbles, with one tibble for each depth level.}
 \item{equalize}{A logical scalar. If TRUE, make all paths end at
 t_max by calling \code{\link{equalize_paths}}.}
 }
+\value{
+A \code{data.frame} with columns \code{id_sim} (unique path
+ID), \code{time}, \code{n_infected} (cumulative number infected
+-- strictly increasing), \code{n_infectious} (number currently
+infectious).
+}
 \description{
 This function computes paths from all trees at once; it is much
 faster than iterating over trees (e.g. as one would do using

@@ -11,7 +11,7 @@ as_tidygraph(tree)
 in the infection propagation}
 }
 \value{
-a \code{tidygraph} object
+A \code{tidygraph} object.
 }
 \description{
 Convert a tree to a \code{tidygraph} object.

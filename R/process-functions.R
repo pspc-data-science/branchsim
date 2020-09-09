@@ -10,8 +10,11 @@
 #' @param tmax A positive scalar. The cut point for paths.
 #' @param equalize A logical scalar. If TRUE, make all paths end at
 #'     t_max by calling \code{\link{equalize_paths}}.
-#' 
-#' @export
+#'
+#' @return A \code{data.frame} with columns \code{id_sim} (unique path
+#'     ID), \code{time}, \code{n_infected} (cumulative number infected
+#'     -- strictly increasing), \code{n_infectious} (number currently
+#'     infectious).
 treelist_to_paths <- function(treelist,
                               tmax,
                               equalize = TRUE) {
@@ -61,8 +64,6 @@ treelist_to_paths <- function(treelist,
 #'
 #' @return A \code{tbl} with the same format as \code{df_paths}, but
 #'     with the last point for each path fixed at \code{tmax}.
-#'
-#' @export
 equalize_paths <- function(df_paths, tmax) {
     # Truncate points beyond tmax
     df_paths <- df_paths %>% filter(time <= tmax)
@@ -102,7 +103,7 @@ get_extinction_data <- function(treelist, tmax = Inf, ceil = Inf) {
 #' @param tree A list of tibbles, each corresponding to a generation
 #'     in the infection propagation
 #'
-#' @return a \code{tidygraph} object
+#' @return A \code{tidygraph} object.
 #'
 #' @export
 as_tidygraph <- function(tree) {
