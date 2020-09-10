@@ -60,7 +60,7 @@ renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = 
 #' asymptotic limit. 
 #'  
 #' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
-#' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
+#' @param mu_limits A vector of the lower and umper bounds of the average number infected per interaction.
 #' @param a The shape parameter of the communicable preiod gamma function. Default = 5.5
 #' @param b The rate parameter of the communicable preiod gamma function. Default = 0.85
 #' 
@@ -101,7 +101,7 @@ asymptotic_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
 #' and average number infected per infectious event.
 #'  
 #' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
-#' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
+#' @param mu_limits A vector of the lower and umper bounds of the average number infected per interaction.
 #' @param a The shape parameter of the communicable preiod gamma function. Default a =5.5.
 #' @param b The rate parameter of the communicable preiod gamma function. Default b = 0.85.
 #' 
@@ -144,7 +144,7 @@ extinct_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
 #' asymptotic limit. 
 #'  
 #' @param lambda_limits A vector of the lower and umper bounds of the average arrival rate of interest.
-#' @param mu_limits A vector of the lower and umper bounds of the average numbre infected per interaction.
+#' @param mu_limits A vector of the lower and umper bounds of the average number infected per interaction.
 #' @param a The shape parameter of the communicable preiod gamma function. Default a = 5.5.
 #' @param b The rate parameter of the communicable preiod gamma function. Default b = 0.85.
 #' 
