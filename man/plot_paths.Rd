@@ -29,22 +29,35 @@ to avoid graphs that are too crowded.}
 
 \item{tlim}{A scalar.}
 
+\item{highlight_path_id}{A subset of values in column \code{id_sim}
+of input \code{paths_data} that will be highlighted (black and
+thicker). If the values provided are not found in column
+\code{id_sim}, no path will be highlighted.}
+
 \item{show_hist}{A logical scalar. If \code{TRUE}, show the
-distribution of paths at the end.}
+distribution of paths at the right-end of the plot. In this
+case, the output will be a \code{ggarrange} object, rather than
+a \code{ggplot} object.}
 
 \item{show_extinct}{A logical scalar. Show extinct paths along with
 non-extinct ones.}
 
 \item{smooth_data}{A \code{data.frame}, with at least the columns
-\code{time}, \code{n_infected}, and \code{n_infectious}.}
+\code{time}, \code{n_infected}, and \code{n_infectious}. If
+given, will be superposed on top of the paths plot.}
 
-\item{extinct_color}{A color value understood by ggplot.}
+\item{extinct_color}{A color value understood by ggplot. This will
+be the colour of paths that went extinct before the end of the
+simulation.}
 
 \item{n_bins}{An integer scalar. Number of bins in the histogram
 panel.}
 }
 \value{
-A plot.
+A plot. If \code{show_hist = TRUE} (default), the output
+will be a \code{ggarrange} object showing both the paths, and a
+histogram of the level at which they terminate. Otherwise the
+output will be a \code{ggplot} object showing only the paths.
 }
 \description{
 Plot epidemic paths

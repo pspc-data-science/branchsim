@@ -91,3 +91,33 @@ calc_avg_path <- function(lambda = .11,
 
     return(eval_tibble)
 }
+
+#' Find logarithmic distribution parameter from a quantile value
+#'
+#' @param q An integer equal to, or greater than 1. Quantile value.
+#' @param conf A probability. Cumulative probability of the
+#'     logarithmic distribution at \code{q}.
+#'
+#' @return parameter for the logarithmic distribution
+#'
+#' @export
+find_p_from_quantile <- function(q, conf = 0.95) {
+
+    root_fun <- function(theta) {
+        conf - extraDistr::plgser(q, theta)
+    }
+
+  uniroot(root_fun, c(.001,.999))$root
+}
+
+
+#' Expectation of the logarithmic distribution
+#'
+#' @param p A scalar greater than 0 and smaller than 1.
+#'
+#' @return The expectation value of the logarithmic distribution.
+#' 
+#' @export
+calc_mu <- function(p) {
+    - (p / ((1 - p) * log(1 - p)))
+}

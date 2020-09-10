@@ -2,27 +2,54 @@
 % Please edit documentation in R/plotting-functions.R
 \name{plot_R0}
 \alias{plot_R0}
-\title{Contour plot of \eqn{R_0} for different values of \eqn{\lambda} and \eqn{\mu}.}
+\title{Contour plot of \eqn{R_eff} for different values of \eqn{\lambda} and \eqn{\mu}.}
 \usage{
 plot_R0(
   my_lambda,
-  my_mu,
+  my_q95,
   tbar,
-  lambda_lim = c(0.01, 0.2),
-  mu_lim = c(1.01, 2),
+  lambda_lim = c(0.02, 0.2),
+  q95_lim = c(2, 10),
   q = 0,
   mbar = NA,
   n = 32
 )
 }
 \arguments{
-\item{lambda}{A vector of two values covering the range of \eqn{lambda}.}
+\item{my_lambda}{The Poisson rate of infectious interactions.}
 
-\item{mu}{A vector of two values covering the range of \eqn{mu}.}
+\item{my_q95}{The 0.95th quantile of the logarithmic distribution
+governing the}
+
+\item{tbar}{The average duration of the communicable period.}
+
+\item{lambda_lim}{A vector of two values covering the range of
+\eqn{lambda}.}
+
+\item{q95_lim}{A vector of two values covering the range of the
+0.95th quantile of the logarithmic distribution governing the
+number of new infections occurring in each infectious
+interaction.}
+
+\item{q}{The probability of an infection belonging to a second
+class of infections, with average duration \code{mbar}, instead
+of \code{tbar} (e.g. when modelling contact tracing).}
+
+\item{mbar}{Average value of the communicable period for infections
+of the second kind. This parameter is unused when \code{q = 0}.}
+
+\item{n}{Grid size for calculating \eqn{R_eff} values.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
-Contour plot of \eqn{R_0} for different values of \eqn{\lambda} and \eqn{\mu}.
+The plot shows a colour map of \eqn{R_eff} across a range of values
+for the rate at which infectious interactions occur, and the 0.95th
+quantile for the number of individuals infected at each infectious
+event. The plot also highlights a specific value of \eqn{R_eff},
+corresponding to \eqn{\lambda =} \code{my_lambda}, and 0.95th
+quantile \code{my_q95}. The value of \eqn{R_eff} is shown in shades
+of red for values greater than one, and blue for values smaller
+than one.
 }

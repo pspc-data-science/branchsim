@@ -2,10 +2,12 @@
 % Please edit documentation in R/plotting-functions.R
 \name{plot_dendrogram}
 \alias{plot_dendrogram}
-\title{Plot dendrogram corresponding to a single path}
+\title{Plot dendrogram for a single path}
 \usage{
 plot_dendrogram(single_path_data, tmax = NA)
 }
 \description{
-Plot dendrogram corresponding to a single path
+This function is in construction. The main inconvenience is that
+the communicable window of each node is only shown if it had at
+least one offspring.
 }

@@ -7,7 +7,9 @@
 plot_log(p, q_high = 0.995)
 }
 \arguments{
-\item{mu}{Average number of individuals infected}
+\item{p}{Parameter of the logarithmic distribution.}
+
+\item{q_high}{Upper quantile to bound the plot.}
 }
 \value{
 A ggplot object
