@@ -43,8 +43,8 @@ renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = 
     eval_tibble<-renewal_function(dmu_fun, G=G(A=A,B=B), Time_limit=Time, nstep = 10000)
     G<- ggplot(eval_tibble, aes(time, solution)) + geom_line(col = "blue") + 
       theme_bw()+ theme(text = element_text(size=15)) + ylab("Expected infectious")+ xlab("Time (days)")+
-      scale_x_continuous(breaks = pretty_breaks(10)) +
-      scale_y_continuous(breaks = pretty_breaks(10))+
+      scale_x_continuous(breaks = scales::pretty_breaks(10)) +
+      scale_y_continuous(breaks = scales::pretty_breaks(10))+
       ggtitle(g_title)
     
   }
