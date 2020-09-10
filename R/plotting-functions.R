@@ -51,11 +51,11 @@ plot_paths <- function(paths_data,
     # Pick y_var limits
     max_y <-
         paths_data %>%
-        pull(!!y_var) %>%
+        pull({{y_var}}) %>%
         max
     min_y <-
         paths_data %>%
-        pull(!!y_var) %>%
+        pull({{y_var}}) %>%
         min
     bin_width <- (log(max_y, 10) - log(min_y, 10)) / n_bins
     max_y <- 10^(log(max_y, 10) + bin_width)
@@ -64,9 +64,13 @@ plot_paths <- function(paths_data,
     plt1 <-
         paths_data  %>%
         filter(id_sim %in% sample(unique(id_sim), min(max(id_sim), n_max))) %>%
-        ggplot(aes(time, !!y_var, group = id_sim, color = is_extinct)) +
+        ggplot(aes(time, {{y_var}}, group = id_sim, color = is_extinct)) +
         geom_step(alpha = .3, show.legend = FALSE) +
-        labs(x = "Time") +
+        # Fancy y label for the two most common cases (n_infected, n_infectious)
+        labs(x = "Time",
+             y = rlang::as_name(y_var) %>%
+                 stringr::str_replace("n_infected", "Cumulative infection count") %>%
+                 stringr::str_replace("n_infectious", "Ongoing infection count")) +
         theme_bw() +
         scale_x_continuous(limits = c(0, tlim),
                            expand = expansion(c(0, 0))) +
@@ -86,7 +90,7 @@ plot_paths <- function(paths_data,
         plt1 <-
             plt1 +
             geom_line(data = smooth_data,
-                      mapping = aes(time, !!y_var),
+                      mapping = aes(time, {{y_var}}),
                       inherit.aes = FALSE,
                       color = "blue",
                       size = 1)
@@ -100,10 +104,12 @@ plot_paths <- function(paths_data,
         plt2 <-
             paths_data %>%
             filter(time == max_time) %>%
-            ggplot(aes(!!y_var, ..density..)) +
+            # Do not use `..density..` as y aesthetic below because
+            # it shows the wrong relative proportions between extinct /
+            # non-extinct cases
+            ggplot(aes({{y_var}})) +
             geom_histogram(aes(fill = is_extinct),
                            binwidth = bin_width,
-                           ## alpha = .5,
                            show.legend = show_extinct) +
             scale_fill_manual(values = c("TRUE" = extinct_color,
                                          "FALSE" = "black")) +
@@ -113,6 +119,7 @@ plot_paths <- function(paths_data,
             labs(fill = "extinct") +
             theme_bw() +
             coord_flip() +
+            labs(y = "density") +
             theme(axis.title.y = element_blank(),
                   axis.text.y = element_blank(),
                   axis.ticks.y = element_blank(),

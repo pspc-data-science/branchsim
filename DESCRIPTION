@@ -26,4 +26,5 @@ Imports:
     pracma,
     scales,
     ggraph,
-    tidygraph
+    tidygraph,
+    stringr
