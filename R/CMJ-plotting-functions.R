@@ -35,8 +35,8 @@ renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = 
     eval_tibble<-renewal_function(dmu_fun, G=1, Time_limit=Time, nstep = 10000)
     G<- ggplot(eval_tibble, aes(time, solution)) + geom_line(col = "blue") + 
       theme_bw()+ theme(text = element_text(size=15)) + ylab("Expected total infected")+ xlab("Time (days)")+
-      scale_x_continuous(breaks = pretty_breaks(10)) +
-      scale_y_continuous(breaks = pretty_breaks(10)) +
+      scale_x_continuous(breaks = scales::pretty_breaks(10)) +
+      scale_y_continuous(breaks = scales::pretty_breaks(10)) +
       ggtitle(g_title)
   }else{
     dmu_fun<- dMu(A=A, B=B, Lambda = Lambda, P = p)
@@ -86,14 +86,14 @@ asymptotic_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
   
   #my_breaks<- min
   ggplot(data_lp, aes(lambda,mu, fill=malthusian)) + geom_raster(interpolate = T) + 
-    scale_fill_viridis_c(breaks = pretty_breaks(10)) + 
+    scale_fill_viridis_c(breaks = scales::pretty_breaks(10)) + 
     theme_bw()+ theme(text = element_text(size=15))+
     xlab("Average number of infectious events per day") +
     ylab("Average number infected per infectious event") + labs(fill="malthusian parameter")+
     guides(fill = guide_colourbar(barwidth = 0.5, barheight = 20)) + 
     geom_line(inherit.aes = FALSE,data = X, aes(x,y))+
-    scale_x_continuous(expand=c(0,0),breaks = pretty_breaks(10)) + 
-    scale_y_continuous(expand=c(0,0), breaks = pretty_breaks(10))
+    scale_x_continuous(expand=c(0,0),breaks = scales::pretty_breaks(10)) + 
+    scale_y_continuous(expand=c(0,0), breaks = scales::pretty_breaks(10))
 }
 
 
@@ -127,13 +127,13 @@ extinct_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
   X<- X %>% filter(y<= max(data_lp$mu)) %>% filter(y>= min(data_lp$mu))
   
   ggplot(data_lp, aes(lambda,mu, fill=extinct)) + geom_raster(interpolate = T) + 
-    scale_fill_viridis_c(breaks = pretty_breaks(10)) + 
+    scale_fill_viridis_c(breaks = scales::pretty_breaks(10)) + 
     theme_bw()+ theme(text = element_text(size=15))+
-    #scale_x_continuous(expand=c(0,0), breaks = pretty_breaks(10)) + 
-    #scale_y_continuous(expand=c(0,0), breaks = pretty_breaks(10)) + 
+    #scale_x_continuous(expand=c(0,0), breaks = scales::pretty_breaks(10)) + 
+    #scale_y_continuous(expand=c(0,0), breaks = scales::pretty_breaks(10)) + 
     geom_line(inherit.aes = FALSE,data = X, aes(x,y))+
-    scale_x_continuous(expand=c(0,0),breaks = pretty_breaks(10)) + 
-    scale_y_continuous(expand=c(0,0), breaks = pretty_breaks(10))+
+    scale_x_continuous(expand=c(0,0),breaks = scales::pretty_breaks(10)) + 
+    scale_y_continuous(expand=c(0,0), breaks = scales::pretty_breaks(10))+
     xlab("Average number of infectious events per day") +
     ylab("Average number infected per infectious event") + labs(fill="extinction probability")+
     guides(fill = guide_colourbar(barwidth = 0.5, barheight = 20))
@@ -184,8 +184,8 @@ component_size_plot<- function(lambda_limits, mu_limits, a=5.5, b=.85){
     ylab("Average number infected per infectious event") + labs(fill="extinct mean\ncomponent size")+
     guides(fill = guide_colourbar(barwidth = 0.5, barheight = 20)) + 
     geom_line(inherit.aes = FALSE,data = X, aes(x,y, col = ""), size=3)+
-    scale_x_continuous(expand=c(0,0),breaks = pretty_breaks(10)) + 
-    scale_y_continuous(expand=c(0,0), breaks = pretty_breaks(10))+labs(colour="phase transition")
+    scale_x_continuous(expand=c(0,0),breaks = scales::pretty_breaks(10)) + 
+    scale_y_continuous(expand=c(0,0), breaks = scales::pretty_breaks(10))+labs(colour="phase transition")
   
   
 }
@@ -213,7 +213,8 @@ plot_single_mother_dist<- function(a=5.5,b=.85,lambda=.11, mu = 1.5){
     geom_point(size = 5, color = "red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2) +
     theme_bw() + theme(text = element_text(size=15))+
     xlab("Number infected during communicable period") + ylab("Probability")+
-    scale_x_continuous(breaks = pretty_breaks(10)) + scale_y_continuous(breaks = pretty_breaks(10))
+      scale_x_continuous(breaks = scales::pretty_breaks(10)) +
+      scale_y_continuous(breaks = scales::pretty_breaks(10))
   
 }
 
@@ -235,8 +236,13 @@ plot_gamma_dist<- function(a=5.5, b= .85){
   ggplot(X, aes(x,y)) + geom_line(col = "blue") + theme_bw() + 
     geom_ribbon(aes(ymax=y),ymin=0,fill="blue",colour=NA,alpha=0.3)+
     theme(text = element_text(size=15)) +
-    xlab("Communicable period") + ylab("Density") + scale_x_continuous(expand = c(0,0), breaks = pretty_breaks(10))+
-    scale_y_continuous(expand = c(0,0),breaks = pretty_breaks(10)) + geom_vline(xintercept = a/b, col = "red")
+      xlab("Communicable period") + ylab("Density") +
+      scale_x_continuous(expand = c(0,0),
+                         breaks = scales::pretty_breaks(10))+
+      scale_y_continuous(expand = c(0,0),
+                         breaks = scales::pretty_breaks(10)) +
+      geom_vline(xintercept = a/b,
+                 col = "red")
   
 }
 
