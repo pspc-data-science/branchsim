@@ -8,9 +8,9 @@ and average number infected per infectious event.}
 extinct_plot(lambda_limits, mu_limits, a = 5.5, b = 0.85)
 }
 \arguments{
-\item{lambda_limits}{A vector of the lower and umper bounds of the average arrival rate of interest.}
+\item{lambda_limits}{A vector of the lower and upper bounds of the average arrival rate of interest.}
 
-\item{mu_limits}{A vector of the lower and umper bounds of the average numbre infected per interaction.}
+\item{mu_limits}{A vector of the lower and upper bounds of the average number infected per interaction.}
 
 \item{a}{The shape parameter of the communicable preiod gamma function. Default a =5.5.}
 
