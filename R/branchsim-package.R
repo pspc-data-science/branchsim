@@ -3,6 +3,5 @@
 #' @import purrr
 #' @import dplyr
 #' @import ggplot2
-#' @import pracma
-#' @import scales
+#' @import stringr
 "_PACKAGE"
