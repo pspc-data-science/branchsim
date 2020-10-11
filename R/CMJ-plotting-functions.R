@@ -33,7 +33,7 @@ renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = 
   if(type == "Total"){
     dmu_fun<- dMu(A=A, B=B, Lambda = Lambda, P = p)
     eval_tibble<-renewal_function(dmu_fun, G=1, Time_limit=Time, nstep = 10000)
-    G<- ggplot(eval_tibble, aes(time, solution)) + geom_line(col = "blue") + 
+    G<- ggplot(eval_tibble, aes(time, solution)) + geom_line() + 
       theme_bw()+ theme(text = element_text(size=15)) + ylab("Expected total infected")+ xlab("Time (days)")+
       scale_x_continuous(breaks = scales::pretty_breaks(10)) +
       scale_y_continuous(breaks = scales::pretty_breaks(10)) +
@@ -41,7 +41,7 @@ renewal_plot<- function(Lambda = .11, mu = 1.5, A=5.5, B=0.85, Time=100, type = 
   }else{
     dmu_fun<- dMu(A=A, B=B, Lambda = Lambda, P = p)
     eval_tibble<-renewal_function(dmu_fun, G=G(A=A,B=B), Time_limit=Time, nstep = 10000)
-    G<- ggplot(eval_tibble, aes(time, solution)) + geom_line(col = "blue") + 
+    G<- ggplot(eval_tibble, aes(time, solution)) + geom_line() + 
       theme_bw()+ theme(text = element_text(size=15)) + ylab("Expected infectious")+ xlab("Time (days)")+
       scale_x_continuous(breaks = scales::pretty_breaks(10)) +
       scale_y_continuous(breaks = scales::pretty_breaks(10))+
