@@ -109,8 +109,12 @@ add_layer <- function(parent_layer,
     n_catch <- rbinom(1, n_new, q) # Bernoulli process (q > 0)
     t_comm <-
         c(rgamma(n_new - n_catch, kappa * tbar, kappa), # tbar, kappa
-          rgamma(n_catch, kappaq * mbar, kappaq)) %>% # mbar, kappaq
-        sample # remove any correlation between parents and children
+          rgamma(n_catch, kappaq * mbar, kappaq)) # mbar, kappaq
+    # remove any correlation between parents and children
+    if (length(t_comm) > 1) {
+        t_comm <- sample(t_comm) # WARNING: `sample` does not work the
+                                 # same with length-1 vectors
+    }
     # Prepare output
     new_layer <- tibble(id = seq_len(n_new) + max(parent_layer$id),
                         id_parent =
