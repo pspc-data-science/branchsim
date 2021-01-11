@@ -218,6 +218,7 @@ plot_single_path <- function(path_data,
 #' the communicable window of each node is only shown if it had at
 #' least one offspring.
 #'
+#' @export
 plot_dendrogram <- function(single_path_data, tmax = NA) {
     # Plot as dendogram
     single_path_data %>%
