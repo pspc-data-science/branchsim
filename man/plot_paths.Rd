@@ -14,7 +14,7 @@ plot_paths(
   show_extinct = TRUE,
   smooth_data = NULL,
   extinct_color = "red",
-  n_bins = 100
+  n_bins = 20
 )
 }
 \arguments{
