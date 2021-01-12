@@ -41,7 +41,7 @@ plot_paths <- function(paths_data,
                        show_extinct = TRUE,
                        smooth_data = NULL,
                        extinct_color = "red",
-                       n_bins = 100) {
+                       n_bins = 20) {
     y_var <- enquo(y_var)
     # Sample down to n_max paths if necessary
     id_sim_all <- unique(paths_data[["id_sim"]])
